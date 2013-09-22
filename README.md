@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.0 on OS X 10.8.4 with Server 2.2
+# Installation guide for GitLab 6.1 on OS X 10.8.4 with Server 2.2.2
 
 ## Requirements
 - Mac OS X 10.8.4
@@ -147,7 +147,7 @@ Install ruby for your user too
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.7.0
+	sudo -u git git checkout v1.7.1
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -172,7 +172,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-0-stable
+	sudo -u git git checkout 6-1-stable
 
 #### Configuring GitLab
 
