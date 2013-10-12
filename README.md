@@ -91,7 +91,7 @@ Create a new user for our gitlab setup 'gitlab'
 
 	CREATE USER 'gitlab'@'localhost' IDENTIFIED BY 'PASSWORD_HERE';
 
-Create databse
+Create database
 
 	CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
