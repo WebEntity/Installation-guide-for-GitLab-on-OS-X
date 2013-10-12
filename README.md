@@ -120,7 +120,9 @@ Make sure rbenv loads in the git user's shell
 	echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' | sudo -u git tee -a /Users/git/.profile
 	sudo -u git cp /Users/git/.profile /Users/git/.bashrc
 
-When it not works
+If you get the following error on OS X 10.8.5 or lower:
+`./bin/install:3: undefined method `require_relative' for main:Object (NoMethodError)`
+Do the following to update to the proper Ruby version
 
 	echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
 	echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
