@@ -173,11 +173,9 @@ Do setup
 #### Configuring GitLab
 
 	sudo -u git cp config/gitlab.yml.example config/gitlab.yml
-	/usr/local/bin/git
+	sudo -u git sed -i "" "s/\/usr\/bin\/git/\/usr\/local\/bin\/git/g" config/gitlab.yml
 	sudo -u git sed -i "" "s/\/home/\/Users/g" config/gitlab.yml
 	sudo -u git sed -i "" "s/localhost/domain.com/g" config/gitlab.yml
-
-Set `bin_path` for git to `/usr/local/bin/git` in `gitlab.yml` Git settings.
 
 Make sure GitLab can write to the `log/` and `tmp/` directories
 
