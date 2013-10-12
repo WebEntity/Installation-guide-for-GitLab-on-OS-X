@@ -77,12 +77,6 @@ Install `docutils` http://sourceforge.net/projects/docutils/files/latest/downloa
 	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
-I also didn’t want mysql listening on any address, so after the install I actually changed the bind address to `127.0.0.1`. Basically we need to edit `~/Library/LaunchAgents/homebrew.mxcl.mysql.plist` and change the file to pass `--bind-address=127.0.0.1` as an argument to the LaunchAgent. 
-
-	curl -fsSL https://gist.github.com/slottermoser/5651958/raw/homebrew.mxcl.mysql.plist -o ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-	launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-
 ### 4. Setup database
 
 Run `mysql_secure_installation` and set a reoot password, disallow remote root login, remove the test database, and reload the privelege tables.
