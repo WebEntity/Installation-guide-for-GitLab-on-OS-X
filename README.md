@@ -1,7 +1,7 @@
-# Installation guide for GitLab 6.1 on OS X 10.8.4 with Server 2.2.2
+# Installation guide for GitLab 6.1 on OS X 10.8.5 with Server 2.2.2
 
 ## Requirements
-- Mac OS X 10.8.4
+- Mac OS X 10.8.5
 - Server app
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
@@ -13,7 +13,7 @@ Hide the git user from the login screen:
 	 sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add git
 
 Unhide:
-	
+
 	sudo defaults delete /Library/Preferences/com.apple.loginwindow HiddenUsersList
 
 ## Recommendation
@@ -41,7 +41,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 	ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 	brew doctor
-	
+
 ### 2. Install some prerequisites
 
 	brew install icu4c # Necessary for the charlock_holmes gem install later
@@ -56,7 +56,7 @@ Make sure you have python 2.5+ (gitlab don’t support python 3.x)
 Confirm python 2.5+
 
 	python --version
-	
+
 GitLab looks for python2
 
 	sudo ln -s /usr/bin/python /usr/bin/python2
@@ -65,22 +65,16 @@ Some more dependices
 
 	sudo easy_install pip
 	sudo pip install pygments
-	
+
 Install `docutils` http://sourceforge.net/projects/docutils/files/latest/download?source=files
 
 	cd docutil
 	sudo python setup.py install
 
 ### 3. Install mysql
-	
+
 	brew install mysql
 	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-
-I also didn’t want mysql listening on any address, so after the install I actually changed the bind address to `127.0.0.1`. Basically we need to edit `~/Library/LaunchAgents/homebrew.mxcl.mysql.plist` and change the file to pass `--bind-address=127.0.0.1` as an argument to the LaunchAgent. 
-
-	curl -fsSL https://gist.github.com/slottermoser/5651958/raw/homebrew.mxcl.mysql.plist -o ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-	launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
 ### 4. Setup database
@@ -90,33 +84,33 @@ Run `mysql_secure_installation` and set a reoot password, disallow remote root l
 	mysql_secure_installation
 
 Now login in mysql
-	
+
 	mysql -u root -pPASSWORD_HERE
 
 Create a new user for our gitlab setup 'gitlab'
 
 	CREATE USER 'gitlab'@'localhost' IDENTIFIED BY 'PASSWORD_HERE';
 
-Create databse
-	
+Create database
+
 	CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
 Grant the GitLab user necessary permissions on the table.
-	
+
 	GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
 Quit the database session
-	
+
 	\q
 
 Try connecting to the new database with the new user
-	
+
 	sudo -u git -H mysql -u gitlab -pPASSWORD_HERE -D gitlabhq_production
 
 ### 5. Install ruby
 
 Install rbenv and ruby-build
-	
+
 	brew install rbenv
 	brew install ruby-build
 
@@ -125,8 +119,10 @@ Make sure rbenv loads in the git user's shell
 	echo 'export PATH="/usr/local/bin:$PATH"' | sudo -u git tee -a /Users/git/.profile
 	echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' | sudo -u git tee -a /Users/git/.profile
 	sudo -u git cp /Users/git/.profile /Users/git/.bashrc
-	
-When it not works
+
+If you get the following error on OS X 10.8.5 or lower:
+`./bin/install:3: undefined method `require_relative' for main:Object (NoMethodError)`
+Do the following to update to the proper Ruby version
 
 	echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
 	echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
@@ -143,7 +139,7 @@ Install ruby for your user too
 	rbenv global 1.9.3-p448
 
 ### 6. Install Gitlab Shell
-	
+
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
@@ -155,19 +151,19 @@ Now open `config.yml` file and edit it
 Set the `gitlab_url`. Replace gitlab.example.com wih your url (domain.com)
 
 	sudo -u git sed -i "" "s/localhost/domain.com/" config.yml
-	
+
 Use `/Users` instead of `/home`, and change redis-cli path to homebrew’s redis-cli
 
 	sudo -u git sed -i "" "s/\/home\//\/Users\//g" config.yml
 	sudo -u git sed -i "" "s/\/usr\/bin\/redis-cli/\/usr\/local\/bin\/redis-cli/" config.yml
 
 Do setup
-	
-	sudo -u git -H ./bin/install	
+
+	sudo -u git -H ./bin/install
 
 ### 7. Install Gitlab
 
-#### Download Gitlab 
+#### Download Gitlab
 
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
@@ -177,11 +173,9 @@ Do setup
 #### Configuring GitLab
 
 	sudo -u git cp config/gitlab.yml.example config/gitlab.yml
-	/usr/local/bin/git	
+	sudo -u git sed -i "" "s/\/usr\/bin\/git/\/usr\/local\/bin\/git/g" config/gitlab.yml
 	sudo -u git sed -i "" "s/\/home/\/Users/g" config/gitlab.yml
 	sudo -u git sed -i "" "s/localhost/domain.com/g" config/gitlab.yml
-	
-Set `bin_path` for git to `/usr/local/bin/git` in `gitlab.yml` Git settings.
 
 Make sure GitLab can write to the `log/` and `tmp/` directories
 
@@ -200,13 +194,13 @@ Create directory for satellites
 	sudo -u git mkdir /Users/git/gitlab-satellites
 
 Create directories for sockets/pids and make sure GitLab can write to them
-	
+
 	sudo -u git mkdir tmp/pids/
 	sudo -u git mkdir tmp/sockets/
-	
+
 	sudo chmod -R u+rwX  tmp/pids/
 	sudo chmod -R u+rwX  tmp/sockets/
-	
+
 Create public/uploads directory otherwise backup will fail
 
 	sudo -u git mkdir public/uploads
@@ -243,11 +237,11 @@ Configure Git global settings for git user, useful when editing via web
 	sudo -u git -H bash -l -c 'gem install bundler'
 	sudo -u git -H bash -l -c 'rbenv rehash'
 	sudo -u git -H bash -l -c 'bundle install --deployment --without development test postgres'
-	
+
 For error with `mysql2` gem you need to edit `mysql_config` file in `/usr/local/Cellar/mysql/5.6.12/bin` and removed the W-compiler options `-Wno-null-conversion` and `-Wno-unused-private-field` for `cflags` and `cxxflags`.
-	
+
 #### Initialize Database and Activate Advanced Features
-	
+
 	sudo -u git -H bash -l -c 'bundle exec rake gitlab:setup RAILS_ENV=production'
 
 Here is your admin login credentials:
@@ -270,7 +264,7 @@ Check gitlab-shell
 	sudo -u git /Users/git/gitlab-shell/bin/check
 
 Double-check environment configuration
-	
+
 	sudo -u git -H bash -l -c 'bundle exec rake gitlab:env:info RAILS_ENV=production'
 
 Do a thorough check. Make sure everything is green.
@@ -293,7 +287,7 @@ Copy `com.webentity.gitlab_backup.plist` to `/Library/LaunchDaemons/` and setup 
 
 	sudo cp com.webentity.gitlab_backup.plist /Library/LaunchDaemons/
 	sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab_backup.plist
-	
+
 I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
 
 ## ToDo
