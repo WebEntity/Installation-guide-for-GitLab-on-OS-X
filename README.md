@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.1 on OS X 10.8.5 with Server 2.2.2
+# Installation guide for GitLab 6.2 on OS X 10.8.5 with Server 2.2.2
 
 ## Requirements
 - Mac OS X 10.8.5
@@ -46,6 +46,10 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 	brew install icu4c # Necessary for the charlock_holmes gem install later
 	brew install git # Install git 1.8 or greater...
+	
+	brew install logrotate
+	ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
+	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
 
 	brew install redis
 	ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
@@ -168,7 +172,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-1-stable
+	sudo -u git git checkout 6-2-stable
 
 #### Configuring GitLab
 
@@ -224,6 +228,18 @@ Configure Git global settings for git user, useful when editing via web
 
 	sudo -u git -H git config --global user.name "GitLab"
 	sudo -u git -H git config --global user.email "gitlab@domain.com"
+
+Copy rack attack middleware config
+
+	sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+
+Uncomment `config.middleware.use Rack::Attack` in `/Users/git/gitlab/config/application.rb`
+
+Set up logrotate
+	
+	sudo mkdir /etc/logrotate.d/
+	sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
+	sudo sed -i "" "s/\/home/\/Users/g" /etc/logrotate.d/gitlab
 
 #### Gitlab Mysql Config
 
