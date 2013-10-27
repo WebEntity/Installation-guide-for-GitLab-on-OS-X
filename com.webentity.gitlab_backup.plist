@@ -10,7 +10,7 @@
 	<string>com.webentity.gitlab_backup</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/git/.rbenv/shims/bundle</string>
+		<string>/usr/bin/bundle</string>
 		<string>exec</string>
 		<string>rake</string>
 		<string>gitlab:backup:create</string>

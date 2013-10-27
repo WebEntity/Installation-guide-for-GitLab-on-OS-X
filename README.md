@@ -1,12 +1,11 @@
-# Installation guide for GitLab 6.2 on OS X 10.8.5 with Server 2.2.2
+# Installation guide for GitLab 6.2 on OS X 10.9 with Server 3
 
 ## Requirements
-- Mac OS X 10.8.5
-- Server app
+- Mac OS X 10.9
+- Server 3
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 - Installed Xcode
-- Installed command line tools in Xcode
 
 Hide the git user from the login screen:
 
@@ -44,14 +43,12 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ### 2. Install some prerequisites
 
-	brew install icu4c # Necessary for the charlock_holmes gem install later
-	brew install git # Install git 1.8 or greater...
+	xcode-select --install #xcode command line tools
 	
-	brew install logrotate
+	brew install icu4c git logrotate redis libxml2
+
 	ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
-
-	brew install redis
 	ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
 
@@ -70,9 +67,11 @@ Some more dependices
 	sudo easy_install pip
 	sudo pip install pygments
 
-Install `docutils` http://sourceforge.net/projects/docutils/files/latest/download?source=files
+Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/download?source=files
 
-	cd docutil
+	curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.11/docutils-0.11.tar.gz
+	gunzip -c docutils-0.11.tar.gz | tar xopf -
+	cd docutils-0.11
 	sudo python setup.py install
 
 ### 3. Install mysql
@@ -113,34 +112,7 @@ Try connecting to the new database with the new user
 
 ### 5. Install ruby
 
-Install rbenv and ruby-build
-
-	brew install rbenv
-	brew install ruby-build
-
-Make sure rbenv loads in the git user's shell
-
-	echo 'export PATH="/usr/local/bin:$PATH"' | sudo -u git tee -a /Users/git/.profile
-	echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' | sudo -u git tee -a /Users/git/.profile
-	sudo -u git cp /Users/git/.profile /Users/git/.bashrc
-
-If you get the following error on OS X 10.8.5 or lower:
-`./bin/install:3: undefined method `require_relative' for main:Object (NoMethodError)`
-Do the following to update to the proper Ruby version
-
-	echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
-	echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
-	. ~/.bash_profile
-
-Install ruby for the git user
-
-	sudo -u git -H -i rbenv install 1.9.3-p448
-	sudo -u git -H -i 'rbenv global 1.9.3-p448'
-
-Install ruby for your user too
-
-	rbenv install 1.9.3-p448
-	rbenv global 1.9.3-p448
+OS X 10.9 has ruby 2.0. No need to install anything.
 
 ### 6. Install Gitlab Shell
 
@@ -222,7 +194,7 @@ Copy the example Unicorn config
 	sudo -u git cp config/unicorn.rb.example config/unicorn.rb
 	sudo -u git sed -i "" "s/\/home/\/Users/g" config/unicorn.rb
 
-Change `listen` to `listen "127.0.0.1:8080"` and comment out gitlab.socket in `unicorn.rb`.
+Comment out `listen "/Users/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 64` in `unicorn.rb`.
 
 Configure Git global settings for git user, useful when editing via web
 
@@ -249,12 +221,11 @@ Set up logrotate
 
 #### Install Gems
 
-	sudo gem install charlock_holmes --version '0.6.9.4'
-	sudo -u git -H bash -l -c 'gem install bundler'
-	sudo -u git -H bash -l -c 'rbenv rehash'
-	sudo -u git -H bash -l -c 'bundle install --deployment --without development test postgres'
+You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `libv8` to `3.16.14.3` (in two places), `therubyracer` to `0.12.0` and `underscore-rails` to `1.5.2`.
 
-For error with `mysql2` gem you need to edit `mysql_config` file in `/usr/local/Cellar/mysql/5.6.12/bin` and removed the W-compiler options `-Wno-null-conversion` and `-Wno-unused-private-field` for `cflags` and `cxxflags`.
+	sudo gem install bundler
+	sudo gem install charlock_holmes --version '0.6.9.4'
+	sudo bundle install --deployment --without development test postgres aws
 
 #### Initialize Database and Activate Advanced Features
 
