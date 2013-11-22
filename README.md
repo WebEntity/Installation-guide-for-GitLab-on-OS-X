@@ -221,7 +221,7 @@ Set up logrotate
 
 #### Install Gems
 
-You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `libv8` to `3.16.14.3` (in two places), `therubyracer` to `0.12.0` and `underscore-rails` to `1.5.2`.
+You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `libv8` to `3.16.14.3` (in two places), `therubyracer` to `0.12.0` and `underscore-rails` to `1.5.2` (in two places). You also need to edit `Gemfile` (`sudo -u git nano Gemfile`) to change `underscore-rails` to `1.5.2`.
 
 	sudo gem install bundler
 	sudo gem install charlock_holmes --version '0.6.9.4'
