@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.3 on OS X 10.9 with Server 3
+# Installation guide for GitLab 6.4 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -119,7 +119,7 @@ OS X 10.9 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.7.9
+	sudo -u git git checkout v1.8.0
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -144,7 +144,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-3-stable
+	sudo -u git git checkout 6-4-stable
 
 #### Configuring GitLab
 
