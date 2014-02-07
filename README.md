@@ -82,7 +82,7 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 
 ### 4. Setup database
 
-Run `mysql_secure_installation` and set a reoot password, disallow remote root login, remove the test database, and reload the privelege tables.
+Run `mysql_secure_installation` and set a root password, disallow remote root login, remove the test database, and reload the privelege tables.
 
 	mysql_secure_installation
 
