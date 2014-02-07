@@ -38,7 +38,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ### 1. Install Homebrew
 
-	ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 	brew doctor
 
 ### 2. Install some prerequisites
