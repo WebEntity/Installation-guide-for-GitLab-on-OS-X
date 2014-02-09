@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.4 on OS X 10.9 with Server 3
+# Installation guide for GitLab 6.5 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -90,9 +90,9 @@ Now login in mysql
 
 	mysql -u root -pPASSWORD_HERE
 
-Create a new user for our gitlab setup 'gitlab'
+Create a new user for our gitlab setup 'git'
 
-	CREATE USER 'gitlab'@'localhost' IDENTIFIED BY 'PASSWORD_HERE';
+	CREATE USER 'git'@'localhost' IDENTIFIED BY 'PASSWORD_HERE';
 
 Create database
 
@@ -100,7 +100,7 @@ Create database
 
 Grant the GitLab user necessary permissions on the table.
 
-	GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+	GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'git'@'localhost';
 
 Quit the database session
 
@@ -108,7 +108,7 @@ Quit the database session
 
 Try connecting to the new database with the new user
 
-	sudo -u git -H mysql -u gitlab -pPASSWORD_HERE -D gitlabhq_production
+	sudo -u git -H mysql -u git -pPASSWORD_HERE -D gitlabhq_production
 
 ### 5. Install ruby
 
@@ -144,7 +144,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-4-stable
+	sudo -u git git checkout 6-5-stable
 
 #### Configuring GitLab
 
@@ -205,8 +205,6 @@ Copy rack attack middleware config
 
 	sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-Uncomment `config.middleware.use Rack::Attack` in `/Users/git/gitlab/config/application.rb`
-
 Set up logrotate
 	
 	sudo mkdir /etc/logrotate.d/
@@ -216,15 +214,13 @@ Set up logrotate
 #### Gitlab Mysql Config
 
 	sudo -u git cp config/database.yml.mysql config/database.yml
-	sudo -u git sed -i "" "s/root/gitlab/g" config/database.yml
 	sudo -u git sed -i "" "s/secure password/PASSWORD_HERE/g" config/database.yml
 
 #### Install Gems
 
-You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `libv8` to `3.16.14.3` (in two places), `therubyracer` to `0.12.0` and `underscore-rails` to `1.5.2` (in two places). You also need to edit `Gemfile` (`sudo -u git nano Gemfile`) to change `underscore-rails` to `1.5.2`.
+You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `underscore-rails` to `1.5.2` (in two places). You also need to edit `Gemfile` (`sudo -u git nano Gemfile`) to change `underscore-rails` to `1.5.2`.
 
 	sudo gem install bundler
-	sudo gem install charlock_holmes --version '0.6.9.4'
 	sudo bundle install --deployment --without development test postgres aws
 
 #### Initialize Database and Activate Advanced Features
