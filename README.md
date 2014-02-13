@@ -5,7 +5,6 @@
 - Server 3
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
-- Installed Xcode
 
 Hide the git user from the login screen:
 
@@ -25,25 +24,28 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ## Install instructions
 
-1. Install Homebrew
-2. Install some prerequisites
-3. Install mysql
-4. Setup database
-5. Install ruby
-6. Install Gitlab Shell
-7. Install GitLab
-8. Check Installation
-9. Setting up Gitlab with Apache
-10. Automatic backups
+1. Install command line tools
+2. Install Homebrew
+3. Install some prerequisites
+4. Install mysql
+5. Setup database
+6. Install ruby
+7. Install Gitlab Shell
+8. Install GitLab
+9. Check Installation
+10. Setting up Gitlab with Apache
+11. Automatic backups
 
-### 1. Install Homebrew
+### 1. Install command line tools
+
+	xcode-select --install #xcode command line tools
+
+### 2. Install Homebrew
 
 	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 	brew doctor
 
-### 2. Install some prerequisites
-
-	xcode-select --install #xcode command line tools
+### 3. Install some prerequisites
 	
 	brew install icu4c git logrotate redis libxml2
 
@@ -74,13 +76,13 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 	cd docutils-0.11
 	sudo python setup.py install
 
-### 3. Install mysql
+### 4. Install mysql
 
 	brew install mysql
 	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
-### 4. Setup database
+### 5. Setup database
 
 Run `mysql_secure_installation` and set a root password, disallow remote root login, remove the test database, and reload the privelege tables.
 
@@ -110,11 +112,11 @@ Try connecting to the new database with the new user
 
 	sudo -u git -H mysql -u git -pPASSWORD_HERE -D gitlabhq_production
 
-### 5. Install ruby
+### 6. Install ruby
 
 OS X 10.9 has ruby 2.0. No need to install anything.
 
-### 6. Install Gitlab Shell
+### 7. Install Gitlab Shell
 
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
@@ -137,7 +139,7 @@ Do setup
 
 	sudo -u git -H ./bin/install
 
-### 7. Install Gitlab
+### 8. Install Gitlab
 
 #### Download Gitlab
 
@@ -240,7 +242,7 @@ Here is your admin login credentials:
 	sudo sed -i "" "s/\/home\//\/Users\//g" /etc/init.d/gitlab
 	sudo /etc/init.d/gitlab start
 
-### 8. Check Installation
+### 9. Check Installation
 
 Check gitlab-shell
 
@@ -256,7 +258,7 @@ Do a thorough check. Make sure everything is green.
 
 The script complained about the init script not being up-to-date, but I assume that’s because it was modified to use /Users instead of /home. You can safely ignore that warning.
 
-### 9. Setting up Gitlab with Apache
+### 10. Setting up Gitlab with Apache
 
 1. Setup website in Server.app (with SSL)
 2. Go to `/Library/Server/Web/Config/apache2/sites`
@@ -264,7 +266,7 @@ The script complained about the init script not being up-to-date, but I assume t
 4. Edit your site config, for example `0000_any_443_domain.com.conf`, like vhost config in this repo.
 5. Start the webserver
 
-### 10. Automatic backups
+### 11. Automatic backups
 
 Copy `com.webentity.gitlab_backup.plist` to `/Library/LaunchDaemons/` and setup it.
 
