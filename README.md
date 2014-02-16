@@ -24,17 +24,17 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ## Install instructions
 
-1. Install command line tools
-2. Install Homebrew
-3. Install some prerequisites
-4. Install mysql
-5. Setup database
-6. Install ruby
-7. Install Gitlab Shell
-8. Install GitLab
-9. Check Installation
-10. Setting up Gitlab with Apache
-11. Automatic backups
+1. [Install command line tools](#1-install-command-line-tools)
+2. [Install Homebrew](#2-install-homebrew)
+3. [Install some prerequisites](#3-install-some-prerequisites)
+4. [Install mysql](#4-install-mysql)
+5. [Setup database](#5-setup-database)
+6. [Install ruby](#6-install-ruby)
+7. [Install Gitlab Shell](#7-install-gitlab-shell)
+8. [Install GitLab](#8-install-gitlab)
+9. [Check Installation](#9-check-installation)
+10. [Setting up Gitlab with Apache](#10-setting-up-gitlab-with-apache)
+11. [Automatic backups](#11-automatic-backups)
 
 ### 1. Install command line tools
 
