@@ -290,3 +290,7 @@ I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
 - http://ryanbigg.com/2011/06/mac-os-x-ruby-rvm-rails-and-you/
 - https://groups.google.com/forum/#!topic/gitlabhq/dPUn77dxNSQ
 - https://gist.github.com/carlosjrcabello/5486422
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/CiTroNaK/installation-guide-for-gitlab-on-os-x/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
