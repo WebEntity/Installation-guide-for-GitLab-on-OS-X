@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.5 on OS X 10.9 with Server 3
+# Installation guide for GitLab 6.7 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -121,7 +121,7 @@ OS X 10.9 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.8.0
+	sudo -u git git checkout v1.9.1
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -146,7 +146,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-5-stable
+	sudo -u git git checkout 6-7-stable
 
 #### Configuring GitLab
 
@@ -225,6 +225,10 @@ You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
 
+If you see error with `version_sorter` gem run this:
+
+	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
+
 #### Initialize Database and Activate Advanced Features
 
 	sudo -u git -H bash -l -c 'bundle exec rake gitlab:setup RAILS_ENV=production'
@@ -281,6 +285,7 @@ I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
 
 ## Links and sources ( thank you guys :-) )
 
+- http://stackoverflow.com/questions/22567971/ruby-gem-version-sorter-on-os-x-10-9
 - http://www.makebetterthings.com/git/install-gitlab-5-3-on-mac-os-x-server-10-8-4/
 - http://thoughtpointers.net/2013/05/23/installing-gitlab-v52-on-os-x/
 - http://createdbypete.com/articles/installing-gitlab-on-mac-os-x-and-mac-os-x-server/
