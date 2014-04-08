@@ -336,6 +336,7 @@ I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
 ### 12. Configuring SMTP
 
 Copy config file
+
 	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
 Edit `config/initializers/smtp_settings.rb` with your settings
