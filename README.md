@@ -35,7 +35,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 9. [Check Installation](#9-check-installation)
 10. [Setting up Gitlab with Apache](#10-setting-up-gitlab-with-apache)
 11. [Automatic backups](#11-automatic-backups)
-12. [Automatic backups](#12-configuring-smtp)
+12. [Configuring SMTP](#12-configuring-smtp)
 
 ### 1. Install command line tools
 
