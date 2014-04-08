@@ -35,6 +35,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 9. [Check Installation](#9-check-installation)
 10. [Setting up Gitlab with Apache](#10-setting-up-gitlab-with-apache)
 11. [Automatic backups](#11-automatic-backups)
+12. [Configuring SMTP](#12-configuring-smtp)
 
 ### 1. Install command line tools
 
@@ -332,6 +333,14 @@ Copy `com.webentity.gitlab_backup.plist` to `/Library/LaunchDaemons/` and setup 
 	sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab_backup.plist
 
 I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
+
+### 12. Configuring SMTP
+
+Copy config file
+
+	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
+
+Edit `config/initializers/smtp_settings.rb` with your settings (see [ActionMailer::Base - Configuration options](http://api.rubyonrails.org/classes/ActionMailer/Base.html))
 
 ## ToDo
 
