@@ -339,7 +339,7 @@ Copy config file
 
 	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
-Edit `config/initializers/smtp_settings.rb` with your settings
+Edit `config/initializers/smtp_settings.rb` with your settings (see [ActionMailer::Base - Configuration options](http://api.rubyonrails.org/classes/ActionMailer/Base.html))
 
 ## ToDo
 
