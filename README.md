@@ -76,13 +76,47 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 	cd docutils-0.11
 	sudo python setup.py install
 
-### 4. Install mysql
+### 4. Install database (postgresql or mysql)
+
+> Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html).
+
+#### postgresql
+	brew install postgresql
+	ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+
+#### mysql
 
 	brew install mysql
 	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
 ### 5. Setup database
+
+#### postgresql
+
+Connect to postgres database
+
+	psql postgres
+
+> If this operation gives you an error `psql: could not connect to server: No such file or directory` check that you are using psql from homebrew (not the one which is installed with Mac OS X). You can find all of the installed psql with `which -a psql`. To fix that you can use fully qualified path to psql or just fix `$PATH` variable by placing path to homebrew `bin` before others. 
+
+Login to PostgreSQL
+	psql -d postgres
+
+Create a user for GitLab.
+	postgres=# CREATE USER git;
+
+Create the GitLab production database & grant all privileges on database
+	postgres=# CREATE DATABASE gitlabhq_production OWNER git;
+
+Quit the database session
+	postgres=# \q
+
+Try connecting to the new database with the new user
+	sudo -u git -H psql -d gitlabhq_production
+
+#### mysql
 
 Run `mysql_secure_installation` and set a root password, disallow remote root login, remove the test database, and reload the privelege tables.
 
@@ -213,7 +247,15 @@ Set up logrotate
 	sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 	sudo sed -i "" "s/\/home/\/Users/g" /etc/logrotate.d/gitlab
 
-#### Gitlab Mysql Config
+#### Gitlab Database Config
+
+##### postgresql
+
+> By default homebrew installs postgresql with allowing access to it with local accounts, so no needs of changing passwords.
+
+	sudo -u git cp config/database.yml.postgresql config/database.yml
+
+##### mysql
 
 	sudo -u git cp config/database.yml.mysql config/database.yml
 	sudo -u git sed -i "" "s/secure password/PASSWORD_HERE/g" config/database.yml
@@ -222,10 +264,22 @@ Set up logrotate
 
 You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `underscore-rails` to `1.5.2` (in two places). You also need to edit `Gemfile` (`sudo -u git nano Gemfile`) to change `underscore-rails` to `1.5.2`.
 
+In case if you are using postgres as database
+
+	sudo gem install bundler
+	sudo bundle install --deployment --without development test mysql aws
+	
+In case if you are using mysql as database
+
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
 
 If you see error with `version_sorter` gem run this:
+
+If you are using postgres
+	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
+
+If you are using mysql
 
 	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
 
