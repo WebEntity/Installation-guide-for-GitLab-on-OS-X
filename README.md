@@ -333,6 +333,13 @@ Copy `com.webentity.gitlab_backup.plist` to `/Library/LaunchDaemons/` and setup 
 
 I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
 
+### 12. Configuring SMTP
+
+Copy config file
+	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
+
+Edit `config/initializers/smtp_settings.rb` with your settings
+
 ## ToDo
 
 - LaunchDaemon for GitLab (`com.webentity.gitlab.plist` in this repo does not work - maybe `/etc/init.d/gitlab` need some tweaks)
