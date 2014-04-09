@@ -293,13 +293,17 @@ Here is your admin login credentials:
 	login: admin@local.host
 	password: 5iveL!fe
 
-#### Install Init script
+#### Install web and background_jobs services
 
-	sudo mkdir /etc/init.d
-	sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
-	sudo chmod +x /etc/init.d/gitlab
-	sudo sed -i "" "s/\/home\//\/Users\//g" /etc/init.d/gitlab
-	sudo /etc/init.d/gitlab start
+Next step will setup services which will keep Gitlab up and running
+
+	sudo curl --output /Library/LaunchDaemons/gitlab.web.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.web.plist
+	sudo launchctl load /Library/LaunchDaemons/gitlab.web.plist
+
+	sudo curl --output /Library/LaunchDaemons/gitlab.background_jobs.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.background_jobs.plist
+	sudo launchctl load /Library/LaunchDaemons/gitlab.background_jobs.plist
+
+> `ProgramArguments` arrays in these plists should be in sync with `start` functions in scripts [background_jobs](https://github.com/gitlabhq/gitlabhq/blob/master/script/background_jobs) and [web](https://github.com/gitlabhq/gitlabhq/blob/master/script/web). 
 
 ### 9. Check Installation
 
@@ -327,12 +331,14 @@ The script complained about the init script not being up-to-date, but I assume t
 
 ### 11. Automatic backups
 
-Copy `com.webentity.gitlab_backup.plist` to `/Library/LaunchDaemons/` and setup it.
+Copy `gitlab.backup.plist` to `/Library/LaunchDaemons/` and setup it.
 
-	sudo cp com.webentity.gitlab_backup.plist /Library/LaunchDaemons/
-	sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab_backup.plist
+	sudo curl --output /Library/LaunchDaemons/gitlab.backup.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.backup.plist
+	sudo launchctl load /Library/LaunchDaemons/gitlab.backup.plist
 
-I recomend to uncomment `keep_time` in `gitlab.yml` Backup settings.
+I recommend to uncomment `keep_time` in `gitlab.yml` Backup settings.
+
+> You can verify backup service with command `sudo launchctl start gitlab.backup` and by looking in logs under `\Users\git\gitlab\log\backup.stderr.log` and `\Users\git\gitlab\log\backup.stdout.log`.
 
 ### 12. Configuring SMTP
 
@@ -341,10 +347,6 @@ Copy config file
 	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
 Edit `config/initializers/smtp_settings.rb` with your settings (see [ActionMailer::Base - Configuration options](http://api.rubyonrails.org/classes/ActionMailer/Base.html))
-
-## ToDo
-
-- LaunchDaemon for GitLab (`com.webentity.gitlab.plist` in this repo does not work - maybe `/etc/init.d/gitlab` need some tweaks)
 
 ## Links and sources ( thank you guys :-) )
 
