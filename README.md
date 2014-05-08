@@ -1,4 +1,4 @@
-# Installation guide for GitLab 6.7 on OS X 10.9 with Server 3
+# Installation guide for GitLab 6.8 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -103,18 +103,23 @@ Connect to postgres database
 > If this operation gives you an error `psql: could not connect to server: No such file or directory` check that you are using psql from homebrew (not the one which is installed with Mac OS X). You can find all of the installed psql with `which -a psql`. To fix that you can use fully qualified path to psql or just fix `$PATH` variable by placing path to homebrew `bin` before others. 
 
 Login to PostgreSQL
+
 	psql -d postgres
 
 Create a user for GitLab.
+
 	postgres=# CREATE USER git;
 
 Create the GitLab production database & grant all privileges on database
+
 	postgres=# CREATE DATABASE gitlabhq_production OWNER git;
 
 Quit the database session
+
 	postgres=# \q
 
 Try connecting to the new database with the new user
+
 	sudo -u git -H psql -d gitlabhq_production
 
 #### mysql
@@ -156,7 +161,7 @@ OS X 10.9 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.9.1
+	sudo -u git git checkout v1.9.3
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -181,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 6-7-stable
+	sudo -u git git checkout 6-8-stable
 
 #### Configuring GitLab
 
@@ -278,6 +283,7 @@ In case if you are using mysql as database
 If you see error with `version_sorter` gem run this:
 
 If you are using postgres
+	
 	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
 
 If you are using mysql
