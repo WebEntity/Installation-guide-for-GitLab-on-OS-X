@@ -280,6 +280,26 @@ In case if you are using mysql as database
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
 
+If you can't build nokogiri 1.6.2 do this:
+
+	brew install libxml2 libxslt
+	brew link libxml2 libxslt
+
+then install libiconv from source
+ 
+	wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz
+	tar xvfz libiconv-1.13.1.tar.gz
+	cd libiconv-1.13.1
+	./configure --prefix=/usr/local/Cellar/libiconv/1.13.1
+	make
+	sudo make install
+	
+finally we need to continue bundle install
+		
+	sudo bundle install --deployment --without development test mysql aws -- 
+		--with-iconv-lib=/usr/local/Cellar/libiconv/1.13.1/lib 
+		--with-iconv-include=/usr/local/Cellar/libiconv/1.13.1/include	
+
 If you see error with `version_sorter` gem run this:
 
 If you are using postgres
