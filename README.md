@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.0 on OS X 10.9 with Server 3
+# Installation guide for GitLab 7.1 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -186,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-0-stable
+	sudo -u git git checkout 7-1-stable
 
 #### Configuring GitLab
 
