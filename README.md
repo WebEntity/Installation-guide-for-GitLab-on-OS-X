@@ -319,6 +319,12 @@ Here is your admin login credentials:
 	login: admin@local.host
 	password: 5iveL!fe
 
+#### Precompile assets
+
+```
+bundle exec rake assets:precompile RAILS_ENV=production
+```
+
 #### Install web and background_jobs services
 
 Next step will setup services which will keep Gitlab up and running
