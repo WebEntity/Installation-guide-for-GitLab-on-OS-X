@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.1 on OS X 10.9 with Server 3
+# Installation guide for GitLab 7.2 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -27,7 +27,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 1. [Install command line tools](#1-install-command-line-tools)
 2. [Install Homebrew](#2-install-homebrew)
 3. [Install some prerequisites](#3-install-some-prerequisites)
-4. [Install mysql](#4-install-mysql)
+4. [Install database](#4-install-database)
 5. [Setup database](#5-setup-database)
 6. [Install ruby](#6-install-ruby)
 7. [Install Gitlab Shell](#7-install-gitlab-shell)
@@ -48,7 +48,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ### 3. Install some prerequisites
 	
-	brew install icu4c git logrotate redis libxml2
+	brew install icu4c git logrotate redis libxml2 cmake
 
 	ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
@@ -77,7 +77,7 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 	cd docutils-0.11
 	sudo python setup.py install
 
-### 4. Install database (postgresql or mysql)
+### 4. Install database
 
 > Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html).
 
@@ -161,7 +161,7 @@ OS X 10.9 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.9.6
+	sudo -u git git checkout v1.9.7
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -186,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-1-stable
+	sudo -u git git checkout 7-2-stable
 
 #### Configuring GitLab
 
