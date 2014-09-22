@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.2 on OS X 10.9 with Server 3
+# Installation guide for GitLab 7.3 on OS X 10.9 with Server 3
 
 ## Requirements
 - Mac OS X 10.9
@@ -161,7 +161,7 @@ OS X 10.9 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v1.9.7
+	sudo -u git git checkout v2.0.0
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -186,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-2-stable
+	sudo -u git git checkout 7-3-stable
 
 #### Configuring GitLab
 
@@ -336,6 +336,48 @@ Next step will setup services which will keep Gitlab up and running
 	sudo launchctl load /Library/LaunchDaemons/gitlab.background_jobs.plist
 
 > `ProgramArguments` arrays in these plists should be in sync with `start` functions in scripts [background_jobs](https://github.com/gitlabhq/gitlabhq/blob/master/script/background_jobs) and [web](https://github.com/gitlabhq/gitlabhq/blob/master/script/web). 
+
+#### Setup Redis Socket
+
+Redis config is located in `/usr/local/etc/redis.conf`. Make o copy:
+
+```
+cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
+```
+
+Edit file and set `port 0` (instead of 6379) and uncomment:
+
+```
+unixsocket /tmp/redis.sock
+unixsocketperm 777
+```
+
+*Warning: permission 777 could be insecure? We need to find better solution. `redis.sock` has `wheel` group. Is there any way how to permanently change it?*
+
+Restart redis (see how at `brew info redis`):
+
+```
+launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+```
+
+Configure Redis connection settings:
+
+```
+sudo -u git -H cp config/resque.yml.example config/resque.yml
+```
+
+Change the Redis socket path to `/tmp/redis.sock`:
+
+```
+sudo -u git -H nano config/resque.yml
+```
+
+Configure gitlab-shell to use Redis sockets (`/tmp/redis.sock`):
+
+```
+sudo -u git nano /Users/git/gitlab-shell/config.yml
+```
 
 ### 9. Check Installation
 
