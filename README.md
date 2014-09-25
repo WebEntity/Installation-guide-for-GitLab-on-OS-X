@@ -48,7 +48,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ### 3. Install some prerequisites
 	
-	brew install icu4c git logrotate redis libxml2 cmake
+	brew install icu4c git logrotate redis libxml2 cmake pkg-config
 
 	ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
