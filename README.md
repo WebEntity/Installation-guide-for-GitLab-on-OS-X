@@ -385,6 +385,9 @@ Check gitlab-shell
 
 	sudo -u git /Users/git/gitlab-shell/bin/check
 
+>If there is an `ECONNREFUSED`-error when checking gitlab-shell it might be a solution to add an `/etc/hosts` entry:
+>`127.0.0.1	domain.com`
+
 Double-check environment configuration
 
 	sudo -u git -H bash -l -c 'bundle exec rake gitlab:env:info RAILS_ENV=production'
