@@ -1,8 +1,8 @@
-# Installation guide for GitLab 7.3 on OS X 10.9 with Server 3
+# Installation guide for GitLab 7.4 on OS X 10.10 with Server 3
 
 ## Requirements
-- Mac OS X 10.9
-- Server 3
+- Mac OS X 10.10
+- Server 4
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 
@@ -154,7 +154,7 @@ Try connecting to the new database with the new user
 
 ### 6. Install ruby
 
-OS X 10.9 has ruby 2.0. No need to install anything.
+OS X 10.10 has ruby 2.0. No need to install anything.
 
 ### 7. Install Gitlab Shell
 
@@ -186,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-3-stable
+	sudo -u git git checkout 7-4-stable
 
 #### Configuring GitLab
 
@@ -268,14 +268,29 @@ Set up logrotate
 
 #### Install Gems
 
-You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`) and change the versions of `underscore-rails` to `1.5.2` (in two places). You also need to edit `Gemfile` (`sudo -u git nano Gemfile`) to change `underscore-rails` to `1.5.2`.
+You need to edit `Gemfile` (`sudo -u git nano Gemfile`):
 
-In case if you are using postgres as database
+```
+gem "underscore-rails", "~> 1.5.2"
+```
+
+You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`):
+
+```
+charlock_holmes (0.7.2)
+libv8 (3.16.14.7)
+underscore-rails (1.5.2)
+underscore-rails (~> 1.5.2)
+```
+
+*Yes, `underscore-rails` is in two places.*
+
+In case if you are using postgres as database:
 
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test mysql aws
 	
-In case if you are using mysql as database
+In case if you are using mysql as database:
 
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
