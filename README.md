@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.4 on OS X 10.10 with Server 3
+# Installation guide for GitLab 7.4 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
