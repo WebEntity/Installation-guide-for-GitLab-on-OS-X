@@ -161,7 +161,7 @@ OS X 10.10 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v2.0.0
+	sudo -u git git checkout v2.0.1
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
