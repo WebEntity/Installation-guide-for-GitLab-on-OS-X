@@ -337,7 +337,7 @@ Here is your admin login credentials:
 #### Precompile assets
 
 ```
-bundle exec rake assets:precompile RAILS_ENV=production
+sudo -u git -H bash -l -c 'bundle exec rake assets:precompile RAILS_ENV=production'
 ```
 
 #### Install web and background_jobs services
