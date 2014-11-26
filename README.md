@@ -81,46 +81,18 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 
 > Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html).
 
-#### postgresql
-	brew install postgresql
-	ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
-
 #### mysql
 
 	brew install mysql
 	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
-### 5. Setup database
-
 #### postgresql
+	brew install postgresql
+	ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 
-Connect to postgres database
-
-	psql postgres
-
-> If this operation gives you an error `psql: could not connect to server: No such file or directory` check that you are using psql from homebrew (not the one which is installed with Mac OS X). You can find all of the installed psql with `which -a psql`. To fix that you can use fully qualified path to psql or just fix `$PATH` variable by placing path to homebrew `bin` before others. 
-
-Login to PostgreSQL
-
-	psql -d postgres
-
-Create a user for GitLab.
-
-	postgres=# CREATE USER git;
-
-Create the GitLab production database & grant all privileges on database
-
-	postgres=# CREATE DATABASE gitlabhq_production OWNER git;
-
-Quit the database session
-
-	postgres=# \q
-
-Try connecting to the new database with the new user
-
-	sudo -u git -H psql -d gitlabhq_production
+### 5. Setup database
 
 #### mysql
 
@@ -151,6 +123,34 @@ Quit the database session
 Try connecting to the new database with the new user
 
 	sudo -u git -H mysql -u git -pPASSWORD_HERE -D gitlabhq_production
+
+#### postgresql
+
+Connect to postgres database
+
+	psql postgres
+
+> If this operation gives you an error `psql: could not connect to server: No such file or directory` check that you are using psql from homebrew (not the one which is installed with Mac OS X). You can find all of the installed psql with `which -a psql`. To fix that you can use fully qualified path to psql or just fix `$PATH` variable by placing path to homebrew `bin` before others. 
+
+Login to PostgreSQL
+
+	psql -d postgres
+
+Create a user for GitLab.
+
+	postgres=# CREATE USER git;
+
+Create the GitLab production database & grant all privileges on database
+
+	postgres=# CREATE DATABASE gitlabhq_production OWNER git;
+
+Quit the database session
+
+	postgres=# \q
+
+Try connecting to the new database with the new user
+
+	sudo -u git -H psql -d gitlabhq_production
 
 ### 6. Install ruby
 
@@ -285,15 +285,15 @@ underscore-rails (~> 1.5.2)
 
 *Yes, `underscore-rails` is in two places.*
 
-In case if you are using postgres as database:
-
-	sudo gem install bundler
-	sudo bundle install --deployment --without development test mysql aws
-	
 In case if you are using mysql as database:
 
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
+
+In case if you are using postgres as database:
+
+	sudo gem install bundler
+	sudo bundle install --deployment --without development test mysql aws
 
 If you can't build nokogiri 1.6.2 do this:
 
@@ -317,13 +317,13 @@ finally we need to continue bundle install
 
 If you see error with `version_sorter` gem run this:
 
-If you are using postgres
-	
-	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
-
 If you are using mysql
 
 	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
+
+If you are using postgres
+	
+	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
 
 #### Initialize Database and Activate Advanced Features
 
