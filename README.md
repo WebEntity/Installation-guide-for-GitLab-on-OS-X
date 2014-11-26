@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.4 on OS X 10.10 with Server 4
+# Installation guide for GitLab 7.5 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
@@ -161,7 +161,7 @@ OS X 10.10 has ruby 2.0. No need to install anything.
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v2.0.1
+	sudo -u git git checkout v2.2.0
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -186,7 +186,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-4-stable
+	sudo -u git git checkout 7-5-stable
 
 #### Configuring GitLab
 
