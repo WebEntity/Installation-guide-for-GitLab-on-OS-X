@@ -6,6 +6,28 @@
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 
+```bash
+LastUserID=`dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1`
+NextUserID=$((LastUserID + 1))
+sudo dscl . create /Users/git
+sudo dscl . create /Users/git RealName "Git Lab"
+sudo dscl . create /Users/git hint "Password Hint"
+sudo dscl . create /Users/git UniqueID $NextUSerID
+LastGroupID=$(dscl . readall /Groups | grep PrimaryGroupID | awk '{ print $2 }' | sort -n | tail -1)
+NextGroupID=$(($LastGroupID + 1 ))
+sudo dscl . create /Groups/git
+sudo dscl . create /Groups/git RealName “Git Lab”
+sudo dscl . create /Groups/git passwd "*"
+sudo dscl . create /Groups/git gid $NextGroupID
+sudo dscl . create /Users/git PrimaryGroupID $NextGroupID
+sudo dscl . create /Users/git UserShell $(which bash)
+sudo dscl . create /Users/git NFSHomeDirectory /Users/git
+sudo cp -R /System/Library/User\ Template/English.lproj /Users/git
+sudo chown -R git:git /Users/git
+```
+
+
+
 Hide the git user from the login screen:
 
 	 sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add git
