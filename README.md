@@ -6,8 +6,10 @@
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 
+Run the following commands in order to create the group and user `git`:
+
 ```bash
-LastUserID=`dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1`
+LastUserID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
 NextUserID=$((LastUserID + 1))
 sudo dscl . create /Users/git
 sudo dscl . create /Users/git RealName "Git Lab"
@@ -16,7 +18,7 @@ sudo dscl . create /Users/git UniqueID $NextUSerID
 LastGroupID=$(dscl . readall /Groups | grep PrimaryGroupID | awk '{ print $2 }' | sort -n | tail -1)
 NextGroupID=$(($LastGroupID + 1 ))
 sudo dscl . create /Groups/git
-sudo dscl . create /Groups/git RealName “Git Lab”
+sudo dscl . create /Groups/git RealName "Git Lab"
 sudo dscl . create /Groups/git passwd "*"
 sudo dscl . create /Groups/git gid $NextGroupID
 sudo dscl . create /Users/git PrimaryGroupID $NextGroupID
