@@ -14,7 +14,7 @@ NextUserID=$((LastUserID + 1))
 sudo dscl . create /Users/git
 sudo dscl . create /Users/git RealName "Git Lab"
 sudo dscl . create /Users/git hint "Password Hint"
-sudo dscl . create /Users/git UniqueID $NextUSerID
+sudo dscl . create /Users/git UniqueID $NextUserID
 LastGroupID=$(dscl . readall /Groups | grep PrimaryGroupID | awk '{ print $2 }' | sort -n | tail -1)
 NextGroupID=$(($LastGroupID + 1 ))
 sudo dscl . create /Groups/git
