@@ -28,8 +28,6 @@ sudo cp -R /System/Library/User\ Template/English.lproj /Users/git
 sudo chown -R git:git /Users/git
 ```
 
-
-
 Hide the git user from the login screen:
 
 	 sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add git
@@ -67,7 +65,7 @@ If you find any issues, please let me know or send PR with fix ;-) Thank you!
 
 ### 2. Install Homebrew
 
-	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	brew doctor
 
 ### 3. Install some prerequisites
@@ -103,7 +101,7 @@ Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/do
 
 ### 4. Install database
 
-> Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html).
+> Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html). But I prefer MySQL.
 
 #### mysql
 
@@ -279,16 +277,16 @@ Set up logrotate
 
 #### Gitlab Database Config
 
+##### mysql
+
+	sudo -u git cp config/database.yml.mysql config/database.yml
+	sudo -u git sed -i "" "s/secure password/PASSWORD_HERE/g" config/database.yml
+
 ##### postgresql
 
 > By default homebrew installs postgresql with allowing access to it with local accounts, so no needs of changing passwords.
 
 	sudo -u git cp config/database.yml.postgresql config/database.yml
-
-##### mysql
-
-	sudo -u git cp config/database.yml.mysql config/database.yml
-	sudo -u git sed -i "" "s/secure password/PASSWORD_HERE/g" config/database.yml
 
 #### Install Gems
 
@@ -462,16 +460,3 @@ Copy config file
 	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
 
 Edit `config/initializers/smtp_settings.rb` with your settings (see [ActionMailer::Base - Configuration options](http://api.rubyonrails.org/classes/ActionMailer/Base.html))
-
-## Links and sources ( thank you guys :-) )
-
-- http://stackoverflow.com/questions/22567971/ruby-gem-version-sorter-on-os-x-10-9
-- http://www.makebetterthings.com/git/install-gitlab-5-3-on-mac-os-x-server-10-8-4/
-- http://thoughtpointers.net/2013/05/23/installing-gitlab-v52-on-os-x/
-- http://createdbypete.com/articles/installing-gitlab-on-mac-os-x-and-mac-os-x-server/
-- https://gist.github.com/jasoncodes/1223731
-- http://stackoverflow.com/questions/11945425/unable-to-install-mysql2-gem-os-x-mountain-lion
-- http://stackoverflow.com/questions/3754662/errors-installing-mysql2-gem-via-the-bundler
-- http://ryanbigg.com/2011/06/mac-os-x-ruby-rvm-rails-and-you/
-- https://groups.google.com/forum/#!topic/gitlabhq/dPUn77dxNSQ
-- https://gist.github.com/carlosjrcabello/5486422
