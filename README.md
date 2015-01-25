@@ -352,7 +352,7 @@ If you are using postgres
 
 Here is your admin login credentials:
 
-	login: admin@local.host
+	login: root
 	password: 5iveL!fe
 
 #### Precompile assets
@@ -360,18 +360,6 @@ Here is your admin login credentials:
 ```
 sudo -u git -H bash -l -c 'bundle exec rake assets:precompile RAILS_ENV=production'
 ```
-
-#### Install web and background_jobs services
-
-Next step will setup services which will keep Gitlab up and running
-
-	sudo curl --output /Library/LaunchDaemons/gitlab.web.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.web.plist
-	sudo launchctl load /Library/LaunchDaemons/gitlab.web.plist
-
-	sudo curl --output /Library/LaunchDaemons/gitlab.background_jobs.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.background_jobs.plist
-	sudo launchctl load /Library/LaunchDaemons/gitlab.background_jobs.plist
-
-> `ProgramArguments` arrays in these plists should be in sync with `start` functions in scripts [background_jobs](https://github.com/gitlabhq/gitlabhq/blob/master/script/background_jobs) and [web](https://github.com/gitlabhq/gitlabhq/blob/master/script/web). 
 
 #### Setup Redis Socket
 
@@ -414,6 +402,18 @@ Configure gitlab-shell to use Redis sockets (`/tmp/redis.sock`):
 ```
 sudo -u git nano /Users/git/gitlab-shell/config.yml
 ```
+
+#### Install web and background_jobs services
+
+Next step will setup services which will keep Gitlab up and running
+
+	sudo curl --output /Library/LaunchDaemons/gitlab.web.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.web.plist
+	sudo launchctl load /Library/LaunchDaemons/gitlab.web.plist
+
+	sudo curl --output /Library/LaunchDaemons/gitlab.background_jobs.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.background_jobs.plist
+	sudo launchctl load /Library/LaunchDaemons/gitlab.background_jobs.plist
+
+> `ProgramArguments` arrays in these plists should be in sync with `start` functions in scripts [background_jobs](https://github.com/gitlabhq/gitlabhq/blob/master/script/background_jobs) and [web](https://github.com/gitlabhq/gitlabhq/blob/master/script/web). 
 
 ### 9. Check Installation
 
