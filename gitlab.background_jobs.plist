@@ -14,7 +14,19 @@
     <string>exec</string>
     <string>sidekiq</string>
     <string>-q</string>
-    <string>post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default</string>
+    <string>post_receive</string>
+    <string>-q</string>
+    <string>mailer</string>
+    <string>-q</string>
+    <string>system_hook</string>
+    <string>-q</string>
+    <string>project_web_hook</string>
+    <string>-q</string>
+    <string>gitlab_shell</string>
+    <string>-q</string>
+    <string>common</string>
+    <string>-q</string>
+    <string>default</string>
     <string>-e</string>
     <string>production</string>
     <string>-P</string>
