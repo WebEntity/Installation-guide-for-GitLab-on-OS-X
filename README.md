@@ -1,8 +1,9 @@
-# Installation guide for GitLab 7.8 on OS X 10.10 with Server 4
+# Installation guide for GitLab 7.9 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
 - Server 4
+- Ruby 2.1.5
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 
@@ -176,14 +177,50 @@ Try connecting to the new database with the new user
 
 ### 6. Install ruby
 
-OS X 10.10 has ruby 2.0. No need to install anything.
+Install rbenv and ruby-build
+
+```
+brew install rbenv ruby-build
+```
+
+Make sure rbenv loads in the git user's shell
+
+```
+echo 'export PATH="/usr/local/bin:$PATH"' | sudo -u git tee -a /Users/git/.profile
+echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' | sudo -u git tee -a /Users/git/.profile
+sudo -u git cp /Users/git/.profile /Users/git/.bashrc
+```
+
+If you get the following error on OS X 10.8.5 or lower:
+`./bin/install:3: undefined method `require_relative' for main:Object (NoMethodError)`
+Do the following to update to the proper Ruby version
+
+```
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
+. ~/.bash_profile
+```
+
+Install ruby for the git user
+
+```
+sudo -u git -H -i 'rbenv install 2.1.5'
+sudo -u git -H -i 'rbenv global 2.1.5'
+```
+
+Install ruby for your user too (optional)
+
+```
+rbenv install 2.1.5
+rbenv global 2.1.5
+```
 
 ### 7. Install Gitlab Shell
 
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v2.5.4
+	sudo -u git git checkout v2.6.0
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -208,7 +245,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-8-stable
+	sudo -u git git checkout 7-9-stable
 
 #### Configuring GitLab
 
