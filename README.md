@@ -360,7 +360,7 @@ If you can't build nokogiri 1.6.2 do this:
 
 then install libiconv from source
  
-	curl -O http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz
+	sudo -u git curl -O http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz
 	tar xvfz libiconv-1.13.1.tar.gz
 	cd libiconv-1.13.1
 	./configure --prefix=/usr/local/Cellar/libiconv/1.13.1
