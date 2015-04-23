@@ -1,9 +1,9 @@
-# Installation guide for GitLab 7.9 on OS X 10.10 with Server 4
+# Installation guide for GitLab 7.10 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
 - Server 4
-- Ruby 2.1.5
+- Ruby 2.1.6
 - User group `git` and user `git` in this group
 - Enable remote login for `git` user
 
@@ -204,15 +204,15 @@ echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
 Install ruby for the git user
 
 ```
-sudo -u git -H -i 'rbenv install 2.1.5'
-sudo -u git -H -i 'rbenv global 2.1.5'
+sudo -u git -H -i 'rbenv install 2.1.6'
+sudo -u git -H -i 'rbenv global 2.1.6'
 ```
 
 Install ruby for your user too (optional)
 
 ```
-rbenv install 2.1.5
-rbenv global 2.1.5
+rbenv install 2.1.6
+rbenv global 2.1.6
 ```
 
 ### 7. Install Gitlab Shell
@@ -220,7 +220,7 @@ rbenv global 2.1.5
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v2.6.0
+	sudo -u git git checkout v2.6.2
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -245,7 +245,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-9-stable
+	sudo -u git git checkout 7-10-stable
 
 #### Configuring GitLab
 
