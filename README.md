@@ -225,7 +225,7 @@ rbenv global 2.1.6
 
 Now open `config.yml` file and edit it
 
-Set the `gitlab_url`. Replace gitlab.example.com wih your url (domain.com)
+Set the `gitlab_url`. Replace gitlab.example.com with your url (domain.com)
 
 	sudo -u git sed -i "" "s/localhost/domain.com/" config.yml
 
@@ -346,12 +346,12 @@ underscore-rails (~> 1.5.2)
 In case if you are using mysql as database:
 
 	sudo gem install bundler
-	sudo bundle install --deployment --without development test postgres aws
+	sudo bundle install --deployment --without development test mysql aws
 
 In case if you are using postgres as database:
 
 	sudo gem install bundler
-	sudo bundle install --deployment --without development test mysql aws
+	sudo bundle install --deployment --without development test postgres aws
 
 If you can't build nokogiri 1.6.2 do this:
 
@@ -377,11 +377,11 @@ If you see error with `version_sorter` gem run this:
 
 If you are using mysql
 
-	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
+	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
 
 If you are using postgres
 	
-	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
+	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
 
 #### Initialize Database and Activate Advanced Features
 
