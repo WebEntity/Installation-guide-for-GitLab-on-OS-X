@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.10 on OS X 10.10 with Server 4
+# Installation guide for GitLab 7.11 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
@@ -220,7 +220,7 @@ rbenv global 2.1.6
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
 	cd gitlab-shell
-	sudo -u git git checkout v2.6.2
+	sudo -u git git checkout v2.6.3
 	sudo -u git cp config.yml.example config.yml
 
 Now open `config.yml` file and edit it
@@ -245,7 +245,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-10-stable
+	sudo -u git git checkout 7-11-stable
 
 #### Configuring GitLab
 
