@@ -95,9 +95,9 @@ Some more dependices
 
 Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/download?source=files
 
-	curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.11/docutils-0.11.tar.gz
-	gunzip -c docutils-0.11.tar.gz | tar xopf -
-	cd docutils-0.11
+	curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.12/docutils-0.12.tar.gz
+	gunzip -c docutils-0.12.tar.gz | tar xopf -
+	cd docutils-0.12
 	sudo python setup.py install
 
 ### 4. Install database
