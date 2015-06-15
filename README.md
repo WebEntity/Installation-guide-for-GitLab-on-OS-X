@@ -343,12 +343,12 @@ underscore-rails (~> 1.5.2)
 
 *Yes, `underscore-rails` is in two places.*
 
-In case if you are using mysql as database:
+In case if you are using postgres as database:
 
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test mysql aws
 
-In case if you are using postgres as database:
+In case if you are using mysql as database:
 
 	sudo gem install bundler
 	sudo bundle install --deployment --without development test postgres aws
@@ -375,11 +375,11 @@ finally we need to continue bundle install
 
 If you see error with `version_sorter` gem run this:
 
-If you are using mysql
+If you are using postgres
 
 	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
 
-If you are using postgres
+If you are using mysql
 	
 	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
 
