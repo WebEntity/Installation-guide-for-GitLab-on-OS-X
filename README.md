@@ -295,7 +295,7 @@ Copy the example Unicorn config
 	sudo -u git cp config/unicorn.rb.example config/unicorn.rb
 	sudo -u git sed -i "" "s/\/home/\/Users/g" config/unicorn.rb
 
-Comment out `listen "/Users/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 64` in `unicorn.rb`.
+Comment out `listen "/Users/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 1024` in `unicorn.rb`.
 
 Configure Git global settings for git user, useful when editing via web
 
