@@ -1,4 +1,4 @@
-# Installation guide for GitLab 7.11 on OS X 10.10 with Server 4
+# Installation guide for GitLab 7.12 on OS X 10.10 with Server 4
 
 ## Requirements
 - Mac OS X 10.10
@@ -245,7 +245,7 @@ Do setup
 	cd /Users/git
 	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 	cd gitlab
-	sudo -u git git checkout 7-11-stable
+	sudo -u git git checkout 7-12-stable
 
 #### Configuring GitLab
 
@@ -345,13 +345,13 @@ underscore-rails (~> 1.5.2)
 
 In case if you are using postgres as database:
 
-	sudo gem install bundler
-	sudo bundle install --deployment --without development test mysql aws
+	sudo -u git -H -i gem install bundler
+	sudo -u git -H -i bundle install --deployment --without development test mysql aws
 
 In case if you are using mysql as database:
 
-	sudo gem install bundler
-	sudo bundle install --deployment --without development test postgres aws
+	sudo -u git -H -i gem install bundler
+	sudo -u git -H -i bundle install --deployment --without development test postgres aws
 
 If you can't build nokogiri 1.6.2 do this:
 
