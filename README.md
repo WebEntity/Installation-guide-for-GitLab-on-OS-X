@@ -577,7 +577,7 @@ root
 
 **Enjoy!**
 
-You can use `sudo sh /etc/init.d/gitlab start`, `sudo sh /etc/init.d/gitlab start` and `sudo sh /etc/init.d/gitlab restart` to start, stop and restart GitLab.
+You can use `sudo sh /etc/init.d/gitlab start`, `sudo sh /etc/init.d/gitlab stop` and `sudo sh /etc/init.d/gitlab restart` to start, stop and restart GitLab.
 
 ## Advanced Setup Tips
 
@@ -612,3 +612,8 @@ Using a self-signed certificate is discouraged but if you must use it follow the
 ### More
 
 You can find more tips in [official documentation](https://github.com/gitlabhq/gitlabhq/blob/8-0-stable/doc/install/installation.md#advanced-setup-tips).
+
+## Todo
+
+- LaunchDaemon with init script (`/etc/init.d/gitlab`)
+- Working LaunchDeamon for Gitlab backups
