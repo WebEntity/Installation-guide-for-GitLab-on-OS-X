@@ -1,0 +1,63 @@
+# Copy this lib/support/init.d/gitlab.default.example file to
+# /etc/default/gitlab in order for it to apply to your system.
+
+# RAILS_ENV defines the type of installation that is running.
+# Normal values are "production", "test" and "development".
+RAILS_ENV="production"
+
+# app_user defines the user that GitLab is run as.
+# The default is "git".
+app_user="git"
+
+# app_root defines the folder in which gitlab and it's components are installed.
+# The default is "/home/$app_user/gitlab"
+app_root="/Users/$app_user/gitlab"
+
+# pid_path defines a folder in which the gitlab and it's components place their pids.
+# This variable is also used below to define the relevant pids for the gitlab components.
+# The default is "$app_root/tmp/pids"
+pid_path="$app_root/tmp/pids"
+
+# socket_path defines the folder in which gitlab places the sockets
+#The default is "$app_root/tmp/sockets"
+socket_path="$app_root/tmp/sockets"
+
+# web_server_pid_path defines the path in which to create the pid file fo the web_server
+# The default is "$pid_path/unicorn.pid"
+web_server_pid_path="$pid_path/unicorn.pid"
+
+# sidekiq_pid_path defines the path in which to create the pid file for sidekiq
+# The default is "$pid_path/sidekiq.pid"
+sidekiq_pid_path="$pid_path/sidekiq.pid"
+
+gitlab_git_http_server_pid_path="$pid_path/gitlab-git-http-server.pid"
+# The -listenXxx settings determine where gitlab-git-http-server
+# listens for connections from NGINX. To listen on localhost:8181, write
+# '-listenNetwork tcp -listenAddr localhost:8181'.
+# The -authBackend setting tells gitlab-git-http-server where it can reach
+# Unicorn.
+gitlab_git_http_server_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-git-http-server.socket -authBackend http://127.0.0.1:8080"
+gitlab_git_http_server_repo_root="/Users/git/repositories"
+gitlab_git_http_server_log="$app_root/log/gitlab-git-http-server.log"
+
+# mail_room_enabled specifies whether mail_room, which is used to process incoming email, is enabled.
+# This is required for the Reply by email feature.
+# The default is "false"
+mail_room_enabled=false
+
+# mail_room_pid_path defines the path in which to create the pid file for mail_room
+# The default is "$pid_path/mail_room.pid"
+mail_room_pid_path="$pid_path/mail_room.pid"
+
+# shell_path defines the path of shell for "$app_user" in case you are using
+# shell other than "bash"
+# The default is "/bin/bash"
+shell_path="/bin/bash"
+
+# Switch to the app_user if it is not he/she who is running the script.
+if [ `whoami` != "$app_user" ]; then
+  eval su - "$app_user" -c $(echo \")$0 "$@"$(echo \"); exit;
+fi
+
+. ~/.profile
+ruby -v

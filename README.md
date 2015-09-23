@@ -1,11 +1,64 @@
-# Installation guide for GitLab 7.12 on OS X 10.10 with Server 4
+# Installation guide for GitLab 8.0 on OS X 10.10
 
-## Requirements
-- Mac OS X 10.10
-- Server 4
-- Ruby 2.1.6
-- User group `git` and user `git` in this group
-- Enable remote login for `git` user
+## Overview
+
+The GitLab installation consists of setting up the following components:
+
+1. Packages / Dependencies
+1. System User
+1. Ruby
+1. Go
+1. Database
+1. Redis
+1. GitLab
+1. Nginx
+
+## 1. Packages / Dependencies
+
+Command line tools
+
+```
+xcode-select --install #xcode command line tools
+```
+
+Homebrew
+
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install icu4c git logrotate libxml2 cmake pkg-config
+```
+
+Make sure you have python 2.5+ (gitlab don’t support python 3.x)
+
+Confirm python 2.5+
+
+```
+python --version
+```
+
+GitLab looks for python2
+
+```
+sudo ln -s /usr/bin/python /usr/bin/python2
+```
+
+Some more dependices
+
+```
+sudo easy_install pip
+sudo pip install pygments
+```
+
+Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/download?source=files
+
+```
+curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.12/docutils-0.12.tar.gz
+gunzip -c docutils-0.12.tar.gz | tar xopf -
+cd docutils-0.12
+sudo python setup.py install
+```
+
+## 2. System User
 
 Run the following commands in order to create the group and user `git`:
 
@@ -13,13 +66,13 @@ Run the following commands in order to create the group and user `git`:
 LastUserID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
 NextUserID=$((LastUserID + 1))
 sudo dscl . create /Users/git
-sudo dscl . create /Users/git RealName "Git Lab"
+sudo dscl . create /Users/git RealName "GitLab"
 sudo dscl . create /Users/git hint "Password Hint"
 sudo dscl . create /Users/git UniqueID $NextUserID
 LastGroupID=$(dscl . readall /Groups | grep PrimaryGroupID | awk '{ print $2 }' | sort -n | tail -1)
 NextGroupID=$(($LastGroupID + 1 ))
 sudo dscl . create /Groups/git
-sudo dscl . create /Groups/git RealName "Git Lab"
+sudo dscl . create /Groups/git RealName "GitLab"
 sudo dscl . create /Groups/git passwd "*"
 sudo dscl . create /Groups/git gid $NextGroupID
 sudo dscl . create /Users/git PrimaryGroupID $NextGroupID
@@ -31,151 +84,20 @@ sudo chown -R git:git /Users/git
 
 Hide the git user from the login screen:
 
-	 sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add git
+```
+sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add git
+```
 
 Unhide:
+```
+sudo defaults delete /Library/Preferences/com.apple.loginwindow HiddenUsersList
+```
 
-	sudo defaults delete /Library/Preferences/com.apple.loginwindow HiddenUsersList
+## 3. Ruby
 
-## Recommendation
+> The use of Ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
 
-Use Parallels Deskop for first install.
-
-## Note
-
-If you find any issues, please let me know or send PR with fix ;-) Thank you!
-
-## Install instructions
-
-1. [Install command line tools](#1-install-command-line-tools)
-2. [Install Homebrew](#2-install-homebrew)
-3. [Install some prerequisites](#3-install-some-prerequisites)
-4. [Install database](#4-install-database)
-5. [Setup database](#5-setup-database)
-6. [Install ruby](#6-install-ruby)
-7. [Install Gitlab Shell](#7-install-gitlab-shell)
-8. [Install GitLab](#8-install-gitlab)
-9. [Check Installation](#9-check-installation)
-10. [Setting up Gitlab with Apache](#10-setting-up-gitlab-with-apache)
-11. [Automatic backups](#11-automatic-backups)
-12. [Configuring SMTP](#12-configuring-smtp)
-
-### 1. Install command line tools
-
-	xcode-select --install #xcode command line tools
-
-### 2. Install Homebrew
-
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	brew doctor
-
-### 3. Install some prerequisites
-	
-	brew install icu4c git logrotate redis libxml2 cmake pkg-config
-
-	ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
-	ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
-
-Make sure you have python 2.5+ (gitlab don’t support python 3.x)
-
-Confirm python 2.5+
-
-	python --version
-
-GitLab looks for python2
-
-	sudo ln -s /usr/bin/python /usr/bin/python2
-
-Some more dependices
-
-	sudo easy_install pip
-	sudo pip install pygments
-
-Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/download?source=files
-
-	curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.12/docutils-0.12.tar.gz
-	gunzip -c docutils-0.12.tar.gz | tar xopf -
-	cd docutils-0.12
-	sudo python setup.py install
-
-### 4. Install database
-
-> Official installation documentation recommend to use postgresql, see [http://doc.gitlab.com/ce/install/installation.html](http://doc.gitlab.com/ce/install/installation.html). But I prefer MySQL.
-
-#### mysql
-
-	brew install mysql
-	ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-
-#### postgresql
-	brew install postgresql
-	ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
-	launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
-
-### 5. Setup database
-
-#### mysql
-
-Run `mysql_secure_installation` and set a root password, disallow remote root login, remove the test database, and reload the privelege tables.
-
-	mysql_secure_installation
-
-Now login in mysql
-
-	mysql -u root -pPASSWORD_HERE
-
-Create a new user for our gitlab setup 'git'
-
-	CREATE USER 'git'@'localhost' IDENTIFIED BY 'PASSWORD_HERE';
-
-Create database
-
-	CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-Grant the GitLab user necessary permissions on the table.
-
-	GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'git'@'localhost';
-
-Quit the database session
-
-	\q
-
-Try connecting to the new database with the new user
-
-	sudo -u git -H mysql -u git -pPASSWORD_HERE -D gitlabhq_production
-
-#### postgresql
-
-Connect to postgres database
-
-	psql postgres
-
-> If this operation gives you an error `psql: could not connect to server: No such file or directory` check that you are using psql from homebrew (not the one which is installed with Mac OS X). You can find all of the installed psql with `which -a psql`. To fix that you can use fully qualified path to psql or just fix `$PATH` variable by placing path to homebrew `bin` before others. 
-
-Login to PostgreSQL
-
-	psql -d postgres
-
-Create a user for GitLab.
-
-	postgres=# CREATE USER git;
-
-Create the GitLab production database & grant all privileges on database
-
-	postgres=# CREATE DATABASE gitlabhq_production OWNER git;
-
-Quit the database session
-
-	postgres=# \q
-
-Try connecting to the new database with the new user
-
-	sudo -u git -H psql -d gitlabhq_production
-
-### 6. Install ruby
+On OS X we are forced to use non-system ruby and install it using version manager. 
 
 Install rbenv and ruby-build
 
@@ -215,119 +137,232 @@ rbenv install 2.1.6
 rbenv global 2.1.6
 ```
 
-### 7. Install Gitlab Shell
+## 4. Go
 
-	cd /Users/git
-	sudo -u git git clone https://github.com/gitlabhq/gitlab-shell.git
-	cd gitlab-shell
-	sudo -u git git checkout v2.6.3
-	sudo -u git cp config.yml.example config.yml
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
+This is a small daemon written in Go.
+To install gitlab-git-http-server we need a Go compiler.
 
-Now open `config.yml` file and edit it
+```
+brew install go
+```
 
-Set the `gitlab_url`. Replace gitlab.example.com with your url (domain.com)
+## 5. Database
 
-	sudo -u git sed -i "" "s/localhost/domain.com/" config.yml
+Gitlab recommends using a PostgreSQL database. But you can use MySQL too, see [MySQL setup guide](database_mysql.md).
 
-Use `/Users` instead of `/home`, and change redis-cli path to homebrew’s redis-cli
+```
+brew install postgresql
+ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+```
 
-	sudo -u git sed -i "" "s/\/home\//\/Users\//g" config.yml
-	sudo -u git sed -i "" "s/\/usr\/bin\/redis-cli/\/usr\/local\/bin\/redis-cli/" config.yml
+Login to PostgreSQL
 
-Do setup
+```
+psql -d postgres
+```
 
-	sudo -u git -H ./bin/install
+Create a user for GitLab.
 
-### 8. Install Gitlab
+```
+CREATE USER git;
+```
 
-#### Download Gitlab
+Create the GitLab production database & grant all privileges on database
 
-	cd /Users/git
-	sudo -u git git clone https://github.com/gitlabhq/gitlabhq.git gitlab
-	cd gitlab
-	sudo -u git git checkout 7-12-stable
+```
+CREATE DATABASE gitlabhq_production OWNER git;
+```
 
-#### Configuring GitLab
+Quit the database session
 
-	sudo -u git cp config/gitlab.yml.example config/gitlab.yml
-	sudo -u git sed -i "" "s/\/usr\/bin\/git/\/usr\/local\/bin\/git/g" config/gitlab.yml
-	sudo -u git sed -i "" "s/\/home/\/Users/g" config/gitlab.yml
-	sudo -u git sed -i "" "s/localhost/domain.com/g" config/gitlab.yml
+```
+\q
+```
 
-Make sure GitLab can write to the `log/` and `tmp/` directories
+Try connecting to the new database with the new user
 
-	sudo chown -R git log/
-	sudo chown -R git tmp/
-	sudo chmod -R u+rwX  log/
-	sudo chmod -R u+rwX  tmp/
+```
+sudo -u git -H psql -d gitlabhq_production
+```
 
-Create directories for repositories make sure GitLab can write to them
+## 6. Redis
 
-	sudo -u git mkdir /Users/git/repositories
-	sudo chmod -R u+rwX  /Users/git/repositories/
+```
+brew install redis
+ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+```
 
-Create directory for satellites
+Redis config is located in `/usr/local/etc/redis.conf`. Make o copy:
 
-	sudo -u git mkdir /Users/git/gitlab-satellites
+```
+cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
+```
 
-Create directories for sockets/pids and make sure GitLab can write to them
+Disable Redis listening on TCP by setting 'port' to 0
+```
+sed 's/^port .*/port 0/' /usr/local/etc/redis.conf.orig | sudo tee /usr/local/etc/redis.conf
+```
 
-	sudo -u git mkdir tmp/pids/
-	sudo -u git mkdir tmp/sockets/
+Edit file (`nano /usr/local/etc/redis.conf`) and uncomment:
 
-	sudo chmod -R u+rwX  tmp/pids/
-	sudo chmod -R u+rwX  tmp/sockets/
+```
+unixsocket /tmp/redis.sock
+unixsocketperm 777
+```
 
-Create public/uploads directory otherwise backup will fail
+Start Redis
+```
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+```
 
-	sudo -u git mkdir public/uploads
-	sudo chmod -R u+rwX  public/uploads
+## 7. GitLab
 
-Fix
+```
+cd /Users/git
+```
 
-	sudo chown -R git:git /Users/git/repositories/
-	sudo chmod -R ug+rwX,o-rwx /Users/git/repositories/
-	sudo chmod -R ug-s /Users/git/repositories/
-	sudo find /Users/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
+### Clone the Source
+
+Clone GitLab repository
+```
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable gitlab
+```
+
+**Note:** You can change `8-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+
+### Configure It
+
+Go to GitLab installation folder
+```
+cd /Users/git/gitlab
+```
+
+Copy the example GitLab config
+```
+sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
+sudo -u git sed -i "" "s/\/usr\/bin\/git/\/usr\/local\/bin\/git/g" config/gitlab.yml
+sudo -u git sed -i "" "s/\/home/\/Users/g" config/gitlab.yml
+```
+
+Update GitLab config file, follow the directions at top of file
+```
+sudo -u git -H nano config/gitlab.yml
+```
+
+Copy the example secrets file
+```
+sudo -u git -H cp config/secrets.yml.example config/secrets.yml
+sudo -u git -H chmod 0600 config/secrets.yml
+```
+
+Make sure GitLab can write to the log/ and tmp/ directories
+```
+sudo chown -R git log/
+sudo chown -R git tmp/
+sudo chmod -R u+rwX,go-w log/
+sudo chmod -R u+rwX tmp/
+```
+
+Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
+```
+sudo chmod -R u+rwX tmp/pids/
+sudo chmod -R u+rwX tmp/sockets/
+```
+
+Make sure GitLab can write to the public/uploads/ directory
+```
+sudo chmod 0750 public/uploads
+```
+
+Make sure GitLab can write to the repositories directory
+```
+sudo chmod -R ug+rwX,o-rwx /Users/git/repositories/
+sudo chmod -R ug-s /Users/git/repositories/
+sudo find /Users/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
+```
+
+Change the permissions of the directory where CI build traces are stored
+```
+sudo chmod -R u+rwX builds/
+```
 
 Copy the example Unicorn config
+```
+sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+sudo -u git sed -i "" "s/\/home/\/Users/g" config/unicorn.rb
+```
 
-	sudo -u git cp config/unicorn.rb.example config/unicorn.rb
-	sudo -u git sed -i "" "s/\/home/\/Users/g" config/unicorn.rb
+Find number of cores
+```
+sysctl -n hw.ncpu
+```
 
-Comment out `listen "/Users/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 1024` in `unicorn.rb`.
+Enable cluster mode if you expect to have a high load instance
+Ex. change amount of workers to 3 for 2GB RAM server
+Set the number of workers to at least the number of cores
+```
+sudo -u git -H nano config/unicorn.rb
+```
 
-Configure Git global settings for git user, useful when editing via web
+Copy the example Rack attack config
+```
+sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+```
 
-	sudo -u git -H git config --global user.name "GitLab"
-	sudo -u git -H git config --global user.email "gitlab@domain.com"
+Configure Git global settings for git user, used when editing via web editor
+```
+sudo -u git -H git config --global core.autocrlf input
+```
 
-Copy rack attack middleware config
+Configure Redis connection settings
+```
+sudo -u git -H cp config/resque.yml.example config/resque.yml
+```
 
-	sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+Change the Redis socket path to `/tmp/redis.sock`:
+```
+sudo -u git -H nano config/resque.yml
+```
 
-Set up logrotate
-	
-	sudo mkdir /etc/logrotate.d/
-	sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
-	sudo sed -i "" "s/\/home/\/Users/g" /etc/logrotate.d/gitlab
+**Important Note:** Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
-#### Gitlab Database Config
+**Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
-##### mysql
+### Configure GitLab DB Settings
 
-	sudo -u git cp config/database.yml.mysql config/database.yml
-	sudo -u git sed -i "" "s/secure password/PASSWORD_HERE/g" config/database.yml
+PostgreSQL only:
+```
+sudo -u git cp config/database.yml.postgresql config/database.yml
+```
 
-##### postgresql
+MySQL only:
+```
+sudo -u git cp config/database.yml.mysql config/database.yml
+```
 
-> By default homebrew installs postgresql with allowing access to it with local accounts, so no needs of changing passwords.
+MySQL and remote PostgreSQL only:
+Update username/password in config/database.yml.
+You only need to adapt the production settings (first part).
+If you followed the database guide then please do as follows:
+Change 'secure password' with the value you have given to $password
+You can keep the double quotes around the password
+```
+sudo -u git -H nano config/database.yml
+```
 
-	sudo -u git cp config/database.yml.postgresql config/database.yml
+PostgreSQL and MySQL:
+Make config/database.yml readable to git only
+```
+sudo -u git -H chmod o-rwx config/database.yml
+```
 
-#### Install Gems
+### Install Gems
 
-You need to edit `Gemfile` (`sudo -u git nano Gemfile`):
+**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+
+You need to edit `Gemfile` (`sudo -u git nano Gemfile`). Use `ctrl + w` in Nano editor to find it:
 
 ```
 gem "underscore-rails", "~> 1.5.2"
@@ -343,157 +378,237 @@ underscore-rails (~> 1.5.2)
 
 *Yes, `underscore-rails` is in two places.*
 
-In case if you are using postgres as database:
 
-	sudo -u git -H -i gem install bundler
-	sudo -u git -H -i bundle install --deployment --without development test mysql aws
-
-In case if you are using mysql as database:
-
-	sudo -u git -H -i gem install bundler
-	sudo -u git -H -i bundle install --deployment --without development test postgres aws
-
-If you can't build nokogiri 1.6.2 do this:
-
-	brew install libxml2 libxslt
-	brew link libxml2 libxslt
-
-then install libiconv from source
- 
-	curl -O http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz
-	tar xvfz libiconv-1.13.1.tar.gz
-	cd libiconv-1.13.1
-	./configure --prefix=/usr/local/Cellar/libiconv/1.13.1
-	make
-	sudo make install
-	
-finally we need to continue bundle install
-		
-	sudo bundle install --deployment --without development test mysql aws -- 
-		--with-iconv-lib=/usr/local/Cellar/libiconv/1.13.1/lib 
-		--with-iconv-include=/usr/local/Cellar/libiconv/1.13.1/include	
-
-If you see error with `version_sorter` gem run this:
-
-If you are using postgres
-
-	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test mysql aws
-
-If you are using mysql
-	
-	sudo ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install --deployment --without development test postgres aws
-
-#### Initialize Database and Activate Advanced Features
-
-	sudo -u git -H bash -l -c 'bundle exec rake gitlab:setup RAILS_ENV=production'
-
-Here is your admin login credentials:
-
-	login: root
-	password: 5iveL!fe
-
-#### Precompile assets
-
+Preparation:
 ```
-sudo -u git -H bash -l -c 'bundle exec rake assets:precompile RAILS_ENV=production'
+sudo su git
+. ~/.profile
+gem install bundler --no-ri --no-rdoc
+rbenv rehash
+cd ~/gitlab/
 ```
 
-#### Setup Redis Socket
-
-Redis config is located in `/usr/local/etc/redis.conf`. Make o copy:
-
+For PostgreSQL (note, the option says "without ... mysql")
 ```
-cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
+bundle install --deployment --without development test mysql aws kerberos
 ```
 
-Edit file and set `port 0` (instead of 6379) and uncomment:
-
+Or if you use MySQL (note, the option says "without ... postgres")
 ```
-unixsocket /tmp/redis.sock
-unixsocketperm 777
+bundle install --deployment --without development test postgres aws kerberos
 ```
 
-*Warning: permission 777 could be insecure? We need to find better solution. `redis.sock` has `wheel` group. Is there any way how to permanently change it?*
+**Note:** If you want to use Kerberos for user authentication, then omit `kerberos` in the `--without` option above.
 
-Restart redis (see how at `brew info redis`):
+### Install GitLab Shell
 
+GitLab Shell is an SSH access and repository management software developed specially for GitLab.
+
+Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 ```
-launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
-```
-
-Configure Redis connection settings:
-
-```
-sudo -u git -H cp config/resque.yml.example config/resque.yml
-```
-
-Change the Redis socket path to `/tmp/redis.sock`:
-
-```
-sudo -u git -H nano config/resque.yml
+sudo su git
+. ~/.profile
+cd ~/gitlab/
+bundle exec rake gitlab:shell:install[v2.6.5] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
-Configure gitlab-shell to use Redis sockets (`/tmp/redis.sock`):
+By default, the gitlab-shell config is generated from your main GitLab config.
+You can review (and modify) the gitlab-shell config as follows:
+```
+sudo -u git -H nano /Users/git/gitlab-shell/config.yml
+```
+
+**Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
+
+**Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
+
+### Install gitlab-git-http-server
+```
+cd /Users/git
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
+cd gitlab-git-http-server
+sudo -u git -H make
+```
+
+### Initialize Database and Activate Advanced Features
 
 ```
-sudo -u git nano /Users/git/gitlab-shell/config.yml
+sudo su git
+. ~/.profile
+cd ~/gitlab/
+bundle exec rake gitlab:setup RAILS_ENV=production
 ```
 
-#### Install web and background_jobs services
+Type 'yes' to create the database tables.
+When done you see 'Administrator account created:
 
-Next step will setup services which will keep Gitlab up and running
+**Note:** You can set the Administrator/root password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD` as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
-	sudo curl --output /Library/LaunchDaemons/gitlab.web.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.web.plist
-	sudo launchctl load /Library/LaunchDaemons/gitlab.web.plist
+```
+bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword
+```
 
-	sudo curl --output /Library/LaunchDaemons/gitlab.background_jobs.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.background_jobs.plist
-	sudo launchctl load /Library/LaunchDaemons/gitlab.background_jobs.plist
+### Secure secrets.yml
 
-> `ProgramArguments` arrays in these plists should be in sync with `start` functions in scripts [background_jobs](https://github.com/gitlabhq/gitlabhq/blob/master/script/background_jobs) and [web](https://github.com/gitlabhq/gitlabhq/blob/master/script/web). 
+The `secrets.yml` file stores encryption keys for sessions and secure variables.
+Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
+Otherwise your secrets are exposed if one of your backups is compromised.
 
-### 9. Check Installation
+### Install Init Script
 
-Check gitlab-shell
+Download the init script (will be `/etc/init.d/gitlab`):
 
-	sudo -u git /Users/git/gitlab-shell/bin/check
+```
+cd /Users/git/gitlab
+sudo mkdir -p /etc/init.d/
+sudo mkdir -p /etc/default/
+sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+```
 
->If there is an `ECONNREFUSED`-error when checking gitlab-shell it might be a solution to add an `/etc/hosts` entry:
->`127.0.0.1	domain.com`
+And if you are installing with a non-default folder or user copy and edit the defaults file:
 
-Double-check environment configuration
+```
+sudo cp gitlab.default.osx /etc/default/gitlab
+```
 
-	sudo -u git -H bash -l -c 'bundle exec rake gitlab:env:info RAILS_ENV=production'
+If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
 
-Do a thorough check. Make sure everything is green.
 
-	sudo -u git -H bash -l -c 'bundle exec rake gitlab:check RAILS_ENV=production'
+### Setup Logrotate
+```
+sudo cp lib/support/logrotate/gitlab /usr/local/etc/logrotate.d/gitlab
+sudo sed -i "" "s/\/home/\/Users/g" /usr/local/etc/logrotate.d/gitlab
+ln -sfv /usr/local/opt/logrotate/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.logrotate.plist
+```
 
-The script complained about the init script not being up-to-date, but I assume that’s because it was modified to use /Users instead of /home. You can safely ignore that warning.
+### Check Application Status
 
-### 10. Setting up Gitlab with Apache
+Check if GitLab and its environment are configured correctly:
+```
+sudo su git
+. ~/.profile
+cd ~/gitlab/
+bundle exec rake gitlab:env:info RAILS_ENV=production
+```
 
-1. Setup website in Server.app (with SSL)
-2. Go to `/Library/Server/Web/Config/apache2/sites`
-3. Stop the webserver
-4. Edit your site config, for example `0000_any_443_domain.com.conf`, like vhost config in this repo.
-5. Start the webserver
+### Compile Assets
+```
+sudo su git
+. ~/.profile
+cd ~/gitlab/
+bundle exec rake assets:precompile RAILS_ENV=production
+```
 
-### 11. Automatic backups
+### Start Your GitLab Instance
+```
+sudo sh /etc/init.d/gitlab start
+```
 
-Copy `gitlab.backup.plist` to `/Library/LaunchDaemons/` and setup it.
+## 8. Nginx
 
-	sudo curl --output /Library/LaunchDaemons/gitlab.backup.plist https://raw.githubusercontent.com/CiTroNaK/Installation-guide-for-GitLab-on-OS-X/master/gitlab.backup.plist
-	sudo launchctl load /Library/LaunchDaemons/gitlab.backup.plist
+**Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
-I recommend to uncomment `keep_time` in `gitlab.yml` Backup settings.
+### Installation
+```
+brew install nginx
+sudo mkdir -p /var/log/nginx/
+```
 
-> You can verify backup service with command `sudo launchctl start gitlab.backup` and by looking in logs under `\Users\git\gitlab\log\backup.stderr.log` and `\Users\git\gitlab\log\backup.stdout.log`.
+### Site Configuration
 
-### 12. Configuring SMTP
+Copy the example site config:
+```
+sudo cp lib/support/nginx/gitlab /usr/local/etc/nginx/servers/gitlab
+sudo sed -i "" "s/\/home/\/Users/g" /usr/local/etc/nginx/servers/gitlab
+```
 
-Copy config file
+Make sure to edit the config file to match your setup:
 
-	sudo -u git -H cp config/initializers/smtp_settings.rb.sample config/initializers/smtp_settings.rb
+Change YOUR_SERVER_FQDN to the fully-qualified domain name of your host serving GitLab.
+```
+sudo nano /usr/local/etc/nginx/servers/gitlab
+```
 
-Edit `config/initializers/smtp_settings.rb` with your settings (see [ActionMailer::Base - Configuration options](http://api.rubyonrails.org/classes/ActionMailer/Base.html))
+**Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
+
+### Test Configuration
+
+Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
+```
+sudo nginx -t
+```
+
+You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
+
+### Start
+
+```
+sudo nginx
+```
+
+## Done!
+
+### Double-check Application Status
+
+To make sure you didn't miss anything run a more thorough check with:
+
+```
+sudo su git
+. ~/.profile
+cd ~/gitlab/
+bundle exec rake gitlab:check RAILS_ENV=production
+```
+
+If all items are green, then congratulations on successfully installing GitLab!
+
+NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
+
+### Initial Login
+
+Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
+
+```
+root
+5iveL!fe
+```
+
+**Important Note:** On login you'll be prompted to change the password.
+
+**Enjoy!**
+
+You can use `sudo sh /etc/init.d/gitlab start`, `sudo sh /etc/init.d/gitlab start` and `sudo sh /etc/init.d/gitlab restart` to start, stop and restart GitLab.
+
+## Advanced Setup Tips
+
+### Using HTTPS
+
+To use GitLab with HTTPS:
+
+1. In `gitlab.yml`:
+    1. Set the `port` option in section 1 to `443`.
+    1. Set the `https` option in section 1 to `true`.
+1. In the `config.yml` of gitlab-shell:
+    1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
+    1. Set the certificates using either the `ca_file` or `ca_path` option.
+1. Use the `gitlab-ssl` Nginx example config instead of the `gitlab` config.
+    1. Update `YOUR_SERVER_FQDN`.
+    1. Update `ssl_certificate` and `ssl_certificate_key`.
+    1. Review the configuration file and consider applying other security and performance enhancing features.
+
+Using a self-signed certificate is discouraged but if you must use it follow the normal directions then:
+
+1. Generate a self-signed SSL certificate:
+
+    ```
+    mkdir -p /etc/nginx/ssl/
+    cd /etc/nginx/ssl/
+    sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
+    sudo chmod o-r gitlab.key
+    ```
+    
+1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
+
+### More
+
+You can find more tips in [official documentation](https://github.com/gitlabhq/gitlabhq/blob/8-0-stable/doc/install/installation.md#advanced-setup-tips).
