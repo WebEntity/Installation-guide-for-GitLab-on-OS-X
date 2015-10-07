@@ -577,7 +577,18 @@ root
 
 **Enjoy!**
 
-You can use `sudo sh /etc/init.d/gitlab start`, `sudo sh /etc/init.d/gitlab stop` and `sudo sh /etc/init.d/gitlab restart` to start, stop and restart GitLab.
+You can use `sudo sh /etc/init.d/gitlab start`, `sudo sh /etc/init.d/gitlab stop` and `sudo sh /etc/init.d/gitlab restart` to manually start, stop and restart GitLab.
+
+### Autostart on boot
+
+Copy Nginx and Gitlab plists and load it:
+
+```
+sudo cp /usr/local/opt/nginx/homebrew.mxcl.nginx.plist /Library/LaunchDaemons/
+sudo cp com.webentity.gitlab.plist /Library/LaunchDaemons/
+sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
+sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab.plist
+```
 
 ## Advanced Setup Tips
 
@@ -615,5 +626,4 @@ You can find more tips in [official documentation](https://github.com/gitlabhq/g
 
 ## Todo
 
-- LaunchDaemon with init script (`/etc/init.d/gitlab`)
 - Working LaunchDeamon for Gitlab backups
