@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.0 on OS X 10.10
+# Installation guide for GitLab 8.1 on OS X 10.10
 
 ## Overview
 
@@ -227,10 +227,10 @@ cd /Users/git
 
 Clone GitLab repository
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-1-stable gitlab
 ```
 
-**Note:** You can change `8-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -427,6 +427,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 cd /Users/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
 cd gitlab-git-http-server
+sudo -u git -H git checkout 0.3.0
 sudo -u git -H make
 ```
 
