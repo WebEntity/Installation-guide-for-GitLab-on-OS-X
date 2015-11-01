@@ -470,7 +470,6 @@ Since you are installing to a folder other than default ```/home/users/git/gitla
 
 ```
 curl -sL https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/archive/master.zip | tar xz
-cd Installation-guide-for-GitLab-on-OS-X-master/
 sudo cp Installation-guide-for-GitLab-on-OS-X-master/gitlab.default.osx /etc/default/gitlab
 ```
 
