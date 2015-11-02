@@ -466,10 +466,11 @@ sudo mkdir -p /etc/default/
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
 ```
 
-And if you are installing with a non-default folder or user copy and edit the defaults file:
+Since you are installing to a folder other than default ```/home/users/git/gitlab```, copy and edit the defaults file:
 
 ```
-sudo cp gitlab.default.osx /etc/default/gitlab
+curl -O https://raw.githubusercontent.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/master/gitlab.default.osx
+sudo cp gitlab.default.osx /etc/default/gitlab.default
 ```
 
 If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
