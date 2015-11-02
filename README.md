@@ -522,7 +522,7 @@ Default nginx configuration has an example server on port 8080, same as Gitlab U
 Edit nginx configuration and comment out whole example server block for it to work together:
 
 ```
-sudo nano /etc/nginx/nginx.conf
+sudo nano /usr/local/etc/nginx/nginx.conf
 ```
 
 Copy the example site config:
