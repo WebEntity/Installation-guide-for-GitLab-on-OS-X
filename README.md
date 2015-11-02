@@ -519,6 +519,13 @@ sudo mkdir -p /var/log/nginx/
 
 ### Site Configuration
 
+Default nginx configuration has an example server on port 8080, same as Gitlab Unicorn instance, which will collide and Gitlab won't start.
+Edit nginx configuration and comment out whole example server block for it to work together:
+
+```
+sudo nano /usr/local/etc/nginx/nginx.conf
+```
+
 Copy the example site config:
 ```
 sudo cp lib/support/nginx/gitlab /usr/local/etc/nginx/servers/gitlab
