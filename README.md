@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.1 on OS X 10.10
+# Installation guide for GitLab 8.2 on OS X 10.10
 
 ## Overview
 
@@ -97,7 +97,7 @@ sudo defaults delete /Library/Preferences/com.apple.loginwindow HiddenUsersList
 
 > The use of Ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
 
-On OS X we are forced to use non-system ruby and install it using version manager. 
+On OS X we are forced to use non-system ruby and install it using version manager.
 
 Install rbenv and ruby-build
 
@@ -227,7 +227,7 @@ cd /Users/git
 
 Clone GitLab repository
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-1-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-2-stable gitlab
 ```
 
 **Note:** You can change `8-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
@@ -371,7 +371,6 @@ gem "underscore-rails", "~> 1.5.2"
 You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`):
 
 ```
-charlock_holmes (0.7.2)
 underscore-rails (1.5.2)
 underscore-rails (~> 1.5.2)
 ```
@@ -409,7 +408,7 @@ Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v2.6.5] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v2.6.7] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
@@ -422,12 +421,12 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
-### Install gitlab-git-http-server
+### Install gitlab-workhorse
 ```
 cd /Users/git
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
-cd gitlab-git-http-server
-sudo -u git -H git checkout 0.3.0
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
+cd gitlab-workhorse
+sudo -u git -H git checkout 0.4.2
 sudo -u git -H make
 ```
 
@@ -626,7 +625,7 @@ Using a self-signed certificate is discouraged but if you must use it follow the
     sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
     sudo chmod o-r gitlab.key
     ```
-    
+
 1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
 ### More
