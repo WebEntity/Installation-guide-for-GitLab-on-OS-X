@@ -194,7 +194,7 @@ brew install redis
 ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
 ```
 
-Redis config is located in `/usr/local/etc/redis.conf`. Make o copy:
+Redis config is located in `/usr/local/etc/redis.conf`. Make a copy:
 
 ```
 cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
