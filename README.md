@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.3 on OS X 10.10
+# Installation guide for GitLab 8.3 on OS X 10.11
 
 ## Overview
 
@@ -25,7 +25,8 @@ Homebrew
 
 ```
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install icu4c git logrotate libxml2 cmake pkg-config
+brew install icu4c git logrotate libxml2 cmake pkg-config openssl
+brew link openssl --force
 ```
 
 Make sure you have python 2.5+ (gitlab don’t support python 3.x)
@@ -41,6 +42,8 @@ GitLab looks for python2
 ```
 sudo ln -s /usr/bin/python /usr/bin/python2
 ```
+
+> On OS X 10.11 it won't work. You need to disable [SIP](https://en.wikipedia.org/wiki/System_Integrity_Protection).
 
 Some more dependices
 
