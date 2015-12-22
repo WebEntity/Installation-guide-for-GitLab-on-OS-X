@@ -1,5 +1,7 @@
 # Installation guide for GitLab 8.3 on OS X 10.11
 
+> This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
+
 ## Overview
 
 The GitLab installation consists of setting up the following components:
