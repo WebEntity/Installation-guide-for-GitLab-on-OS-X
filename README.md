@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.2 on OS X 10.10
+# Installation guide for GitLab 8.3 on OS X 10.10
 
 ## Overview
 
@@ -126,15 +126,15 @@ echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
 Install ruby for the git user
 
 ```
-sudo -u git -H -i 'rbenv install 2.1.6'
-sudo -u git -H -i 'rbenv global 2.1.6'
+sudo -u git -H -i 'rbenv install 2.1.7'
+sudo -u git -H -i 'rbenv global 2.1.7'
 ```
 
 Install ruby for your user too (optional)
 
 ```
-rbenv install 2.1.6
-rbenv global 2.1.6
+rbenv install 2.1.7
+rbenv global 2.1.7
 ```
 
 ## 4. Go
@@ -227,10 +227,10 @@ cd /Users/git
 
 Clone GitLab repository
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-2-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
 ```
 
-**Note:** You can change `8-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -408,7 +408,7 @@ Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v2.6.7] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v2.6.9] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
@@ -426,7 +426,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 cd /Users/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
 cd gitlab-workhorse
-sudo -u git -H git checkout 0.4.2
+sudo -u git -H git checkout 0.5.1
 sudo -u git -H make
 ```
 
