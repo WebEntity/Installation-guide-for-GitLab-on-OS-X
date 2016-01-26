@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.3 on OS X 10.11
+# Installation guide for GitLab 8.4 on OS X 10.11
 
 > This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
 
@@ -232,10 +232,10 @@ cd /Users/git
 
 Clone GitLab repository
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-4-stable gitlab
 ```
 
-**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -367,22 +367,6 @@ sudo -u git -H chmod o-rwx config/database.yml
 
 **Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
-You need to edit `Gemfile` (`sudo -u git nano Gemfile`). Use `ctrl + w` in Nano editor to find it:
-
-```
-gem "underscore-rails", "~> 1.5.2"
-```
-
-You need to edit `Gemfile.lock` (`sudo -u git nano Gemfile.lock`):
-
-```
-underscore-rails (1.5.2)
-underscore-rails (~> 1.5.2)
-```
-
-*Yes, `underscore-rails` is in two places.*
-
-
 Preparation:
 ```
 sudo su git
@@ -413,7 +397,7 @@ Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v2.6.9] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v2.6.10] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
@@ -431,7 +415,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 cd /Users/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
 cd gitlab-workhorse
-sudo -u git -H git checkout 0.5.1
+sudo -u git -H git checkout 0.6.1
 sudo -u git -H make
 ```
 
