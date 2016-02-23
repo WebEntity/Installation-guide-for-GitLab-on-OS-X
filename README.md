@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.4 on OS X 10.11
+# Installation guide for GitLab 8.5 on OS X 10.11
 
 > This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
 
@@ -131,15 +131,15 @@ echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
 Install ruby for the git user
 
 ```
-sudo -u git -H -i 'rbenv install 2.1.7'
-sudo -u git -H -i 'rbenv global 2.1.7'
+sudo -u git -H -i 'rbenv install 2.1.8'
+sudo -u git -H -i 'rbenv global 2.1.8'
 ```
 
 Install ruby for your user too (optional)
 
 ```
-rbenv install 2.1.7
-rbenv global 2.1.7
+rbenv install 2.1.8
+rbenv global 2.1.8
 ```
 
 ## 4. Go
@@ -232,7 +232,7 @@ cd /Users/git
 
 Clone GitLab repository
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-4-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-5-stable gitlab
 ```
 
 **Note:** You can change `8-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
@@ -415,7 +415,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 cd /Users/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
 cd gitlab-workhorse
-sudo -u git -H git checkout 0.6.1
+sudo -u git -H git checkout 0.6.5
 sudo -u git -H make
 ```
 
