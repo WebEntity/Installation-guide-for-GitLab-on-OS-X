@@ -452,6 +452,7 @@ cd /Users/git/gitlab
 sudo mkdir -p /etc/init.d/
 sudo mkdir -p /etc/default/
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+sudo sed -i "" "s/\/home\//\/Users\//g" /etc/init.d/gitlab
 ```
 
 Since you are installing to a folder other than default ```/home/users/git/gitlab```, copy and edit the defaults file:
