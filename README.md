@@ -108,6 +108,7 @@ Install rbenv and ruby-build
 
 ```
 brew install rbenv ruby-build
+brew install --HEAD rbenv ruby-build
 ```
 
 Make sure rbenv loads in the git user's shell
@@ -172,6 +173,8 @@ Create a user for GitLab.
 
 ```
 CREATE USER git;
+ALTER USER git WITH SUPERUSER;
+ALTER USER git WITH CREATEDB;
 ```
 
 Create the GitLab production database & grant all privileges on database
@@ -278,11 +281,13 @@ sudo chmod -R u+rwX tmp/sockets/
 
 Make sure GitLab can write to the public/uploads/ directory
 ```
-sudo chmod 0750 public/uploads
+sudo -u git -H mkdir -p public/uploads
+sudo chmod 0700 public/uploads
 ```
 
 Make sure GitLab can write to the repositories directory
 ```
+sudo -u git -H mkdir -p /Users/git/repositories
 sudo chmod -R ug+rwX,o-rwx /Users/git/repositories/
 sudo chmod -R ug-s /Users/git/repositories/
 sudo find /Users/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
@@ -452,6 +457,7 @@ cd /Users/git/gitlab
 sudo mkdir -p /etc/init.d/
 sudo mkdir -p /etc/default/
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+sudo sed -i "" "s/\/home/\/Users/g" /etc/init.d/gitlab 
 ```
 
 Since you are installing to a folder other than default ```/home/users/git/gitlab```, copy and edit the defaults file:
@@ -502,6 +508,7 @@ sudo sh /etc/init.d/gitlab start
 ### Installation
 ```
 brew install nginx
+
 sudo mkdir -p /var/log/nginx/
 ```
 
@@ -582,6 +589,7 @@ Copy Nginx and Gitlab plists and load it:
 
 ```
 sudo cp /usr/local/opt/nginx/homebrew.mxcl.nginx.plist /Library/LaunchDaemons/
+curl -O https://raw.githubusercontent.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/master/com.webentity.gitlab.plist
 sudo cp com.webentity.gitlab.plist /Library/LaunchDaemons/
 sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
 sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab.plist
