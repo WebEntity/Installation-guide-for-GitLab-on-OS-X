@@ -278,7 +278,7 @@ sudo chmod -R u+rwX tmp/sockets/
 
 Make sure GitLab can write to the public/uploads/ directory
 ```
-sudo chmod 0750 public/uploads
+sudo chmod 0700 public/uploads
 ```
 
 Make sure GitLab can write to the repositories directory
