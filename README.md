@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.6 on OS X 10.11
+# Installation guide for GitLab 8.7 on OS X 10.11
 
 > This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
 
@@ -6,14 +6,14 @@
 
 The GitLab installation consists of setting up the following components:
 
-1. Packages / Dependencies
-1. System User
-1. Ruby
-1. Go
-1. Database
-1. Redis
-1. GitLab
-1. Nginx
+1.  Packages / Dependencies
+2.  System User
+3.  Ruby
+4.  Go
+5.  Database
+6.  Redis
+7.  GitLab
+8.  Nginx
 
 ## 1. Packages / Dependencies
 
@@ -54,7 +54,7 @@ sudo easy_install pip
 sudo pip install pygments
 ```
 
-Install `docutils` from http://sourceforge.net/projects/docutils/files/latest/download?source=files
+Install `docutils` from [source](http://sourceforge.net/projects/docutils/files/latest/download?source=files).
 
 ```
 curl -O http://heanet.dl.sourceforge.net/project/docutils/docutils/0.12/docutils-0.12.tar.gz
@@ -94,6 +94,7 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -
 ```
 
 Unhide:
+
 ```
 sudo defaults delete /Library/Preferences/com.apple.loginwindow HiddenUsersList
 ```
@@ -206,6 +207,7 @@ cp /usr/local/etc/redis.conf /usr/local/etc/redis.conf.orig
 ```
 
 Disable Redis listening on TCP by setting 'port' to 0
+
 ```
 sed 's/^port .*/port 0/' /usr/local/etc/redis.conf.orig | sudo tee /usr/local/etc/redis.conf
 ```
@@ -218,6 +220,7 @@ unixsocketperm 777
 ```
 
 Start Redis
+
 ```
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
 ```
@@ -231,20 +234,23 @@ cd /Users/git
 ### Clone the Source
 
 Clone GitLab repository
+
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-6-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-7-stable gitlab
 ```
 
-**Note:** You can change `8-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
 Go to GitLab installation folder
+
 ```
 cd /Users/git/gitlab
 ```
 
 Copy the example GitLab config
+
 ```
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 sudo -u git sed -i "" "s/\/usr\/bin\/git/\/usr\/local\/bin\/git/g" config/gitlab.yml
@@ -252,17 +258,20 @@ sudo -u git sed -i "" "s/\/home/\/Users/g" config/gitlab.yml
 ```
 
 Update GitLab config file, follow the directions at top of file
+
 ```
 sudo -u git -H nano config/gitlab.yml
 ```
 
 Copy the example secrets file
+
 ```
 sudo -u git -H cp config/secrets.yml.example config/secrets.yml
 sudo -u git -H chmod 0600 config/secrets.yml
 ```
 
 Make sure GitLab can write to the log/ and tmp/ directories
+
 ```
 sudo chown -R git log/
 sudo chown -R git tmp/
@@ -271,17 +280,20 @@ sudo chmod -R u+rwX tmp/
 ```
 
 Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
+
 ```
 sudo chmod -R u+rwX tmp/pids/
 sudo chmod -R u+rwX tmp/sockets/
 ```
 
 Make sure GitLab can write to the public/uploads/ directory
+
 ```
 sudo chmod 0700 public/uploads
 ```
 
 Make sure GitLab can write to the repositories directory
+
 ```
 sudo chmod -R ug+rwX,o-rwx /Users/git/repositories/
 sudo chmod -R ug-s /Users/git/repositories/
@@ -289,17 +301,20 @@ sudo find /Users/git/repositories/ -type d -print0 | sudo xargs -0 chmod g+s
 ```
 
 Change the permissions of the directory where CI build traces are stored
+
 ```
 sudo chmod -R u+rwX builds/
 ```
 
 Copy the example Unicorn config
+
 ```
 sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 sudo -u git sed -i "" "s/\/home/\/Users/g" config/unicorn.rb
 ```
 
 Find number of cores
+
 ```
 sysctl -n hw.ncpu
 ```
@@ -307,26 +322,37 @@ sysctl -n hw.ncpu
 Enable cluster mode if you expect to have a high load instance
 Ex. change amount of workers to 3 for 2GB RAM server
 Set the number of workers to at least the number of cores
+
 ```
 sudo -u git -H nano config/unicorn.rb
 ```
 
 Copy the example Rack attack config
+
 ```
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 ```
 
 Configure Git global settings for git user, used when editing via web editor
+
 ```
 sudo -u git -H git config --global core.autocrlf input
 ```
 
+Disable `git gc --auto` because GitLab runs `git gc` for us already.
+
+```
+sudo -u git -H git config --global gc.auto 0
+```
+
 Configure Redis connection settings
+
 ```
 sudo -u git -H cp config/resque.yml.example config/resque.yml
 ```
 
 Change the Redis socket path to `/tmp/redis.sock`:
+
 ```
 sudo -u git -H nano config/resque.yml
 ```
@@ -338,11 +364,13 @@ sudo -u git -H nano config/resque.yml
 ### Configure GitLab DB Settings
 
 PostgreSQL only:
+
 ```
 sudo -u git cp config/database.yml.postgresql config/database.yml
 ```
 
 MySQL only:
+
 ```
 sudo -u git cp config/database.yml.mysql config/database.yml
 ```
@@ -353,12 +381,14 @@ You only need to adapt the production settings (first part).
 If you followed the database guide then please do as follows:
 Change 'secure password' with the value you have given to $password
 You can keep the double quotes around the password
+
 ```
 sudo -u git -H nano config/database.yml
 ```
 
 PostgreSQL and MySQL:
 Make config/database.yml readable to git only
+
 ```
 sudo -u git -H chmod o-rwx config/database.yml
 ```
@@ -368,6 +398,7 @@ sudo -u git -H chmod o-rwx config/database.yml
 **Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
 Preparation:
+
 ```
 sudo su git
 . ~/.profile
@@ -377,11 +408,13 @@ cd ~/gitlab/
 ```
 
 For PostgreSQL (note, the option says "without ... mysql")
+
 ```
 bundle install --deployment --without development test mysql aws kerberos
 ```
 
 Or if you use MySQL (note, the option says "without ... postgres")
+
 ```
 bundle install --deployment --without development test postgres aws kerberos
 ```
@@ -393,15 +426,17 @@ bundle install --deployment --without development test postgres aws kerberos
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
 Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
+
 ```
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v2.6.11] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v2.7.2] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
 You can review (and modify) the gitlab-shell config as follows:
+
 ```
 sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 ```
@@ -411,6 +446,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
 ### Install gitlab-workhorse
+
 ```
 cd /Users/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
@@ -515,6 +551,7 @@ sudo nano /usr/local/etc/nginx/nginx.conf
 ```
 
 Copy the example site config:
+
 ```
 sudo cp lib/support/nginx/gitlab /usr/local/etc/nginx/servers/gitlab
 sudo sed -i "" "s/\/home/\/Users/g" /usr/local/etc/nginx/servers/gitlab
@@ -523,6 +560,7 @@ sudo sed -i "" "s/\/home/\/Users/g" /usr/local/etc/nginx/servers/gitlab
 Make sure to edit the config file to match your setup:
 
 Change YOUR_SERVER_FQDN to the fully-qualified domain name of your host serving GitLab.
+
 ```
 sudo nano /usr/local/etc/nginx/servers/gitlab
 ```
@@ -532,6 +570,7 @@ sudo nano /usr/local/etc/nginx/servers/gitlab
 ### Test Configuration
 
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
+
 ```
 sudo nginx -t
 ```
