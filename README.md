@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.7 on OS X 10.11
+# Installation guide for GitLab 8.8 on OS X 10.11
 
 > This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
 
@@ -236,10 +236,10 @@ cd /Users/git
 Clone GitLab repository
 
 ```
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-7-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-8-stable gitlab
 ```
 
-**Note:** You can change `8-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
