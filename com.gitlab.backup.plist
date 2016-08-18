@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>com.gitlab.backup</string>
+		<key>UserName</key>
+		<string>git</string>
+		<key>WorkingDirectory</key>
+		<string>/Users/git/gitlab</string>
+		<key>EnvironmentVariables</key>
+		<dict>
+			<key>RAILS_ENV<a/key>
+			<string>production</string>
+			<key>PATH</key>
+			<string>/Users/git/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Applications/Server.app/Contents/ServerRoot/usr/bin:/Applications/Server.app/Contents/ServerRoot/usr/sbin</string>
+		</dict>
+		<key>ProgramArguments</key>
+		<array>
+			<string>bundle</string>
+			<string>exec</string>
+			<string>rake</string>
+			<string>gitlab:backup:create</string>
+		</array>
+		<key>StartCalendarInterval</key>
+		<dict>
+			<key>Hour</key>
+			<integer>10</integer>
+			<key>Minute</key>
+			<integer>20</integer>
+		</dict>
+		<key>StandardOutPath</key>
+		<string>/usr/local/var/log/gitlab_backup.log</string>
+		<key>StandardErrorPath</key>
+		<string>/usr/local/var/log/gitlab_backup_err.log</string>
+	</dict>
+</plist>
