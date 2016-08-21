@@ -628,6 +628,44 @@ sudo launchctl load /Library/LaunchDaemons/com.webentity.gitlab.plist
 
 ## Advanced Setup Tips
 
+### Automated backups
+
+Create log directory, copy in backup plist and load it
+To enable backup to function you will need to configure the backup options in `config/gitlab.yml`
+```
+sudo mkdir -p /usr/local/var/log/gitlab
+sudo chown git:git /usr/local/var/log/gitlab
+sudo cp com.gitlab.backup.plist /Library/LaunchDaemons/
+sudo launchctl load /Library/LaunchDaemons/com.gitlab.backup.plist
+```
+
+Example external HD backup config settings
+```
+  ## Backup settings
+  backup:
+    path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+    # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
+    # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # pg_schema: public     # default: nil, it means that all schemas will be backed up
+    upload:
+    #   # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+        provider: Local
+        local_root: '/Volumes/BackupHD/gitlab_backups'
+      remote_directory: '.'
+    #     provider: AWS
+    #     region: eu-west-1
+    #     aws_access_key_id: AKIAKIAKI
+    #     aws_secret_access_key: 'secret123'
+    #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+    #   remote_directory: 'my.s3.bucket'
+    #   # Use multipart uploads when file size reaches 100MB, see
+    #   #  http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html
+    #   multipart_chunk_size: 104857600
+    #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+    #   # encryption: 'AES256'
+```
+
 ### Using HTTPS
 
 To use GitLab with HTTPS:
@@ -662,4 +700,3 @@ You can find more tips in [official documentation](https://github.com/gitlabhq/g
 
 ## Todo
 
-- Working LaunchDeamon for Gitlab backups
