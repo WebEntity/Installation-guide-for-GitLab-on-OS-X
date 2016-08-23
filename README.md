@@ -132,15 +132,15 @@ echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
 Install ruby for the git user
 
 ```
-sudo -u git -H -i 'rbenv install 2.1.8'
-sudo -u git -H -i 'rbenv global 2.1.8'
+sudo -u git -H -i 'rbenv install 2.3.1'
+sudo -u git -H -i 'rbenv global 2.3.1'
 ```
 
 Install ruby for your user too (optional)
 
 ```
-rbenv install 2.1.8
-rbenv global 2.1.8
+rbenv install 2.3.1
+rbenv global 2.3.1
 ```
 
 ## 4. Go
@@ -431,7 +431,7 @@ Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v3.2.1] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v3.4.0] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
@@ -699,4 +699,3 @@ Using a self-signed certificate is discouraged but if you must use it follow the
 You can find more tips in [official documentation](https://github.com/gitlabhq/gitlabhq/blob/8-0-stable/doc/install/installation.md#advanced-setup-tips).
 
 ## Todo
-
