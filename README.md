@@ -1,4 +1,4 @@
-# Installation guide for GitLab 8.11 on OS X 10.11
+# Installation guide for GitLab 8.15 on OS X 10.11
 
 > This is WIP version for OS X 10.11. For OS X 10.10 see [10.10 branch](https://github.com/WebEntity/Installation-guide-for-GitLab-on-OS-X/tree/10.10).
 
@@ -132,15 +132,15 @@ echo 'eval "$(rbenv init - --no-rehash)"' >> ~/.bash_profile
 Install ruby for the git user
 
 ```
-sudo -u git -H -i 'rbenv install 2.3.1'
-sudo -u git -H -i 'rbenv global 2.3.1'
+sudo -u git -H -i 'rbenv install 2.3.3'
+sudo -u git -H -i 'rbenv global 2.3.3'
 ```
 
 Install ruby for your user too (optional)
 
 ```
-rbenv install 2.3.1
-rbenv global 2.3.1
+rbenv install 2.3.3
+rbenv global 2.3.3
 ```
 
 ## 4. Go
@@ -345,6 +345,12 @@ Disable `git gc --auto` because GitLab runs `git gc` for us already.
 sudo -u git -H git config --global gc.auto 0
 ```
 
+Configure Git to generate packfile bitmaps (introduced in Git 2.0) on the GitLab server during git gc.
+
+```
+sudo -u git -H git config --global repack.writeBitmaps true
+```
+
 Configure Redis connection settings
 
 ```
@@ -431,7 +437,7 @@ Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
 sudo su git
 . ~/.profile
 cd ~/gitlab/
-bundle exec rake gitlab:shell:install[v3.4.0] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
+bundle exec rake gitlab:shell:install[v4.1.1] REDIS_URL=unix:/tmp/redis.sock RAILS_ENV=production
 ```
 
 By default, the gitlab-shell config is generated from your main GitLab config.
@@ -448,11 +454,8 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 ### Install gitlab-workhorse
 
 ```
-cd /Users/git
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
-cd gitlab-workhorse
-sudo -u git -H git checkout v0.7.8
-sudo -u git -H make
+cd /Users/git/gitlab
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
 ### Initialize Database and Activate Advanced Features
@@ -693,6 +696,16 @@ Using a self-signed certificate is discouraged but if you must use it follow the
     ```
 
 1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
+
+### SMTP configuration
+
+If you're installing from source and use SMTP to deliver mail, you will need to add the following line to config/initializers/smtp_settings.rb:
+
+```
+ActionMailer::Base.delivery_method = :smtp
+```
+
+See [smtp_settings.rb.sample](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-15-stable/config/initializers/smtp_settings.rb.sample#L13) as an example.
 
 ### More
 
