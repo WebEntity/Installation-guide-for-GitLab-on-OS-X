@@ -469,7 +469,7 @@ sudo -u git -H nano /Users/git/gitlab-shell/config.yml
 
 ```
 cd /Users/git/gitlab
-sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+bundle exec rake "gitlab:workhorse:install[/Users/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
 ### Initialize Database and Activate Advanced Features
@@ -537,8 +537,8 @@ sudo chmod 0700 /Users/git/gitlab/tmp/sockets/private
 sudo chown git /Users/git/gitlab/tmp/sockets/private
 
 # If you are using non-default settings you need to update config.toml
-cd /home/git/gitaly
-sudo -u git -H editor config.toml
+cd /Users/git/gitaly
+sudo -u git -H nano config.toml
 ```
 
 For more information about configuring Gitaly see
